@@ -1,0 +1,39 @@
+{
+    "name": "learningformation-node-ejs",
+    "version": "1.0.0",
+    "description": "Deuxième projet de formation Node avec EJS",
+    "main": "server.js",
+    "scripts": {
+      "test": "jest"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/remi1230/learningFormation-nodejs-ejs.git"
+    },
+    "author": "Rémi Tafforeau",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/remi1230/learningFormation-nodejs-ejs/issues"
+    },
+    "homepage": "https://github.com/remi1230/learningFormation-nodejs-ejs#readme",
+    "jest": {
+        "testPathIgnorePatterns": [
+          "/node_modules/",
+          "/tests/front.test.js"
+        ]
+    },
+    "dependencies": {
+      "bcrypt": "^5.1.1",
+      "bootstrap": "^5.3.3",
+      "cors": "^2.8.5",
+      "dotenv": "^16.4.5",
+      "ejs": "^3.1.9",
+      "express": "^4.19.2",
+      "jest": "^29.7.0",
+      "jsonwebtoken": "^9.0.2",
+      "multer": "^1.4.5-lts.1",
+      "mysql2": "^3.9.3",
+      "path": "^0.12.7",
+      "sequelize": "^6.37.2"
+    }
+  }

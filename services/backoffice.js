@@ -37,8 +37,6 @@ async function getAllNews(req, withObsoletes = true) {
 
     let news = await News.findAll(options);
 
-    //console.log((news[0].createdAt).getDate());
-
     news.forEach(theNews => {
         const fullDate     = dateToStrFr(theNews.createdAt, true);
         const [date, time] = fullDate.split(' ');
@@ -122,4 +120,8 @@ function getDayOrder(dayName){
     return days[dayName];
 }
 
-module.exports = { getAllServices, getAllSchedules, getAllNews, getAllSchedulesNotInBase, getAllAppointments, getDayOrder, getAllPatients, getAllProfessionals };
+module.exports = {
+    getAllServices, getAllSchedules, getAllNews, getAllSchedulesNotInBase,
+    getAllAppointments, getDayOrder, getAllPatients, getAllProfessionals,
+    dateToStrFr, dateToStrUS
+};

@@ -3,7 +3,7 @@ const getById = id => document.getElementById(id);
 //Variables globales
 let glo = {
     urls: {
-        base: 'http://ctrobien.com/learningFormation2/',
+        base: 'http://localhost:3000/',
         takeAppointment: 'takeAppointment',
         connexion: 'connexion',
         service: 'service/',
@@ -36,6 +36,12 @@ const deleteService       = (serviceId)   => { getInFetch(glo.urls.base + glo.ur
 const deleteNews          = (newsId)      => { getInFetch(glo.urls.base + glo.urls.news + 'delete/' + newsId, reloadNewsSelectAndInit); }
 const deleteSchedules     = (schedulesId) => { getInFetch(glo.urls.base + glo.urls.schedules + 'delete/' + schedulesId, reloadSchedulesSelectAndInit); }
 
+
+// ************************ TO JEST TESTS ************************ //
+module.exports = { getSelectMaxValue, getSelectFirstValue };
+// *************************************************************** //
+
+
 //ÉVÈNEMENTS
 document.addEventListener('DOMContentLoaded', function() {
     let appointmentDone = getById('appointmentDone');
@@ -51,7 +57,7 @@ if(getById('takeAppointment')){
     });
 }
 
-if(location.pathname === '/learningFormation2/login' && servicesHTMLSelect){
+if(location.pathname === '/login' && servicesHTMLSelect){
     servicesHTMLSelect.addEventListener('change', function(e){ getServiceInfos(e.target.value); });
     newsHTMLSelect.addEventListener('change', function(e){ getNewsInfos(e.target.value); });
     schedulesHTMLSelect.addEventListener('change', function(e){ getSchedulesInfos(e.target.value); });
@@ -98,7 +104,7 @@ if(location.pathname === '/learningFormation2/login' && servicesHTMLSelect){
     getById('deleteNewsButton').addEventListener('click', function(e){ deleteNews(newsHTMLSelect.value); });
     getById('deleteSchedulesButton').addEventListener('click', function(e){ deleteSchedules(schedulesHTMLSelect.value); });
 }
-else if(location.pathname === '/learningFormation2/service'){
+else if(location.pathname === '/service'){
     const serviceHTMLItem = {
         select    : getById('serviceId'),
         cardTitle : getById('serviceDescription'),
@@ -158,7 +164,7 @@ function addListenerOnForm(formId, enPoint, method = 'POST', idVarName = false, 
             }
           }
   
-          fetch('http://ctrobien.com/learningFormation2/' + enPoint + param, fetchOptions)
+          fetch('http://localhost:3000/' + enPoint + param, fetchOptions)
           .then(response => response.json())
           .then(data => {
             console.log('Succès:', data);
