@@ -1,6 +1,7 @@
 // Importation des modules nécessaires
 const http = require('http');
-const app  = require('./app');
+const app = require('./app');
+const sequelize = require('./config/database'); // Importez la configuration de la base de données
 
 /**
  * Fonction pour normaliser le port sur lequel le serveur va écouter.
@@ -62,7 +63,15 @@ server.on('listening', () => {
   console.log('Listening on ' + bind); // Log lors du démarrage de l'écoute du serveur
 });
 
-// Le serveur commence à écouter sur le port spécifié
-server.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-});
+// Synchronisation de la base de données puis démarrage du serveur
+sequelize.sync({ force: false }) // Utilisez { force: true } pour forcer la recréation de la table
+  .then(() => {
+    console.log('La base de données a été synchronisée');
+    // Le serveur commence à écouter sur le port spécifié
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Erreur lors de la synchronisation de la base de données :', err);
+  });

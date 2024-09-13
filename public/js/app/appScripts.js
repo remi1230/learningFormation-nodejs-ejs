@@ -38,7 +38,9 @@ const deleteSchedules     = (schedulesId) => { getInFetch(glo.urls.base + glo.ur
 
 
 // ************************ TO JEST TESTS ************************ //
-module.exports = { getSelectMaxValue, getSelectFirstValue };
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { getSelectMaxValue, getSelectFirstValue };
+}
 // *************************************************************** //
 
 
