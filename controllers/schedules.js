@@ -1,4 +1,5 @@
 //Importation du modèle représentant la structure des données en BDD pour la table schedules
+const sequelize = require('../config/database');
 const db      = require('../model');
 const Schedules = db.Schedules;
 
@@ -11,7 +12,9 @@ const { getDayOrder } = require('../services/backoffice');
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getAllSchedulesInJSON = (req, res, next) => {
+exports.getAllSchedulesInJSON = async (req, res, next) => {
+    await sequelize.query('USE dentiste');
+
     Schedules.findAll({order: [['order', 'ASC']]})
     .then(schedules => {
         if (!schedules) {
@@ -28,7 +31,9 @@ exports.getAllSchedulesInJSON = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getSchedulesById = (req, res, next) => {
+exports.getSchedulesById = async (req, res, next) => {
+    await sequelize.query('USE dentiste');
+
     Schedules.findByPk(req.params.id)
     .then(schedules => {
         if (!schedules) {
@@ -47,16 +52,18 @@ exports.getSchedulesById = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.addOrUpdate = (req, res, next) => {
+exports.addOrUpdate = async (req, res, next) => {
     if(req.auth.userRole !== 'Professional'){ return res.status(400).json({ error: "You must be a professional to update a schedules!" })};
 
     const dayOfWeek = req.body.dayOfWeek;
     const openTime  = req.body.openTime;
     const closeTime = req.body.closeTime;
 
+    await sequelize.query('USE dentiste');
     Schedules.findOne({ where: { dayOfWeek: dayOfWeek } })
-    .then(schedules => {
+    .then(async schedules => {
         if (!schedules) {
+            await sequelize.query('USE dentiste');
             Schedules.create({
                 dayOfWeek : dayOfWeek,
                 openTime  : openTime,
@@ -67,6 +74,7 @@ exports.addOrUpdate = (req, res, next) => {
             .catch(error => { res.status(400).json( { error })})
         }
         else{
+            await sequelize.query('USE dentiste');
             return schedules.update({
                 openTime  : openTime,
                 closeTime : closeTime,
@@ -86,13 +94,15 @@ exports.addOrUpdate = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de suppression réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.deleteByDayOfWeek = (req, res, next) => {
+exports.deleteByDayOfWeek = async (req, res, next) => {
     if(req.auth.userRole !== 'Professional'){ 
+        await sequelize.query('USE dentiste');
         return res.status(400).json({ error: "You must be a professional to delete a schedule!" });
     }
 
     const dayOfWeek  = req.params.dayOfWeek;
 
+    await sequelize.query('USE dentiste');
     Schedules.findOne({ where: { dayOfWeek: dayOfWeek } })
         .then(schedule => {
             if (!schedule) {
@@ -113,7 +123,8 @@ exports.deleteByDayOfWeek = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.delete = (req, res, next) => {
+exports.delete = async (req, res, next) => {
+    await sequelize.query('USE dentiste');
     if(req.auth.userRole !== 'Professional'){ 
         return res.status(400).json({ error: "You must be a professional to delete a schedule!" });
     }
@@ -145,7 +156,19 @@ exports.delete = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getAll = (req, res, next) => {
-    return Schedules.findAll()
+exports.getAll = async () => {
+    try {
+        // Forcer l'utilisation de la base de données si nécessaire
+        await sequelize.query('USE dentiste');
+
+        // Récupérer les horaires
+        const schedules = await Schedules.findAll();
+
+        // Retourner directement les horaires
+        return schedules;
+    } catch (err) {
+        console.error('Erreur lors de la récupération des horaires :', err);
+        throw new Error('Erreur lors de la récupération des horaires');
+    }
 };
 

@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'News'
+    modelName: 'News',
+    //schema: 'dentiste',
   });
 
   return News;

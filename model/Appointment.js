@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Appointment'
+    modelName: 'Appointment',
+    //schema: 'dentiste',
   });
 
   return Appointment;

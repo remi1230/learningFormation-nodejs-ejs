@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    //schema: 'dentiste',
     // Les options comme les hooks ou les méthodes d'instance peuvent être ajoutées ici
   });
 

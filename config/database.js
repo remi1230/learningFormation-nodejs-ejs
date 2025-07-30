@@ -4,14 +4,16 @@ require('dotenv').config();
 const bddUser = process.env.BDD_USER;
 const bddName = process.env.BDD_NAME;
 const bddMdp  = encodeURIComponent(process.env.BDD_MDP);
+const hostUrl = process.env.HOST_URL;
 
 delete require.cache[require.resolve('sequelize')];
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(bddName, bddUser, bddMdp, {
-  host: 'localhost',
+  host: hostUrl,
   port: 3306,
-  dialect: 'mysql'
+  dialect: 'mysql',
+  logging: console.log,
 });
 
 module.exports = sequelize;

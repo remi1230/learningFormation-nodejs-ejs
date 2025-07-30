@@ -1,3 +1,4 @@
+const sequelize = require('../config/database');
 //Importation du modèle représentant la structure des données en BDD pour les tables appointment, user et service
 const db          = require('../model');
 const Appointment = db.Appointment;
@@ -20,6 +21,7 @@ exports.add = async (req, res, next) => {
     const email = req.body.userEmail;
 
     try {
+        await sequelize.query('USE dentiste');
         let user = await User.findOne({ where: { email: email } });
         if (!user) {
             const userData = {
@@ -60,14 +62,15 @@ exports.add = async (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
     if(req.auth.userRole !== 'Professional'){ return res.status(400).json({ error: "Seuls les professionnels peuvent modifier les appointment!" })};
 
     const id          = req.params.id;
     const status      = req.body.status;
 
+    await sequelize.query('USE dentiste');
     Appointment.findByPk(id)
-    .then(appointment => {
+    .then(async appointment => {
         if (!appointment) {
             return res.status(404).json({error: 'Appointment non trouvé !'});
         }
@@ -75,6 +78,7 @@ exports.update = (req, res, next) => {
             status: status   !== undefined ? status   : appointment.status,
         };
         
+        await sequelize.query('USE dentiste');
         appointment.update(updateValues)
         .then(() => res.status(200).json({message: 'Appointment mis à jour !'}))
         .catch(error => res.status(400).json({error}));

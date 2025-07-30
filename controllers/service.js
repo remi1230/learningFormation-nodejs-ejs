@@ -1,4 +1,5 @@
 //Importation des modèles représentant la structure des données en BDD pour les tables service et user
+const sequelize = require('../config/database');
 const { Service, User } = require('../model/index'); 
 
 /**
@@ -9,12 +10,13 @@ const { Service, User } = require('../model/index');
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de création réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.add = (req, res, next) => {
+exports.add = async (req, res, next) => {
     if(req.auth.userRole !== 'Professional'){ return res.status(400).json( { error: "You must be a professional to add a service!" })};
 
     const name        = req.body.name;
     const description = req.body.description;
     const detail      = req.body.detail;
+    await sequelize.query('USE dentiste');
     Service.create({
         name        : name,
         description : description,
@@ -33,7 +35,7 @@ exports.add = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
     if(req.auth.userRole !== 'Professional'){ return res.status(400).json({ error: "You must be a professional to update a service!" })};
 
     const id          = req.params.id;
@@ -42,8 +44,9 @@ exports.update = (req, res, next) => {
     const detail      = req.body.detail;
     const obsolete    = req.body.obsolete;
 
+    await sequelize.query('USE dentiste');
     Service.findByPk(id)
-    .then(service => {
+    .then(async service => {
         if (!service) {
             return res.status(404).json({error: 'Service non trouvé !'});
         }
@@ -60,6 +63,7 @@ exports.update = (req, res, next) => {
             updateValues.obsolete = obsolete;
         }
 
+        await sequelize.query('USE dentiste');
         service.update(updateValues)
         .then(() => res.status(200).json({message: 'Service mis à jour !'}))
         .catch(error => res.status(400).json({error}));
@@ -74,7 +78,8 @@ exports.update = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getServiceById = (req, res, next) => {
+exports.getServiceById = async (req, res, next) => {
+    await sequelize.query('USE dentiste');
     Service.findByPk(req.params.id)
     .then(service => {
         if (!service) {
@@ -92,12 +97,42 @@ exports.getServiceById = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getAllServices = (req, res, next) => {
-    return Service.findAll({
-        where: { obsolete: 0 },
-        order: [['name', 'ASC']]
-    })
+ exports.getAllServices = async () => {
+    try {
+        // Forcer l'utilisation de la base de données si nécessaire
+        await sequelize.query('USE dentiste');
+
+        // Récupérer les services
+        const services = await Service.findAll({
+            where: { obsolete: 0 },
+            order: [['name', 'ASC']]
+        });
+
+        // Retourner directement les services
+        return services;
+    } catch (err) {
+        console.error('Erreur lors de la récupération des services :', err);
+        throw new Error('Erreur lors de la récupération des services');
+    }
 };
+
+/*exports.getAllServices = (req, res, next) => {
+    sequelize.query('USE dentiste')
+        .then(() => {
+            // Requête pour récupérer tous les services
+            return Service.findAll({
+                where: { obsolete: 0 },
+                order: [['name', 'ASC']]
+            });
+        })
+        .then(services => {
+            res.status(200).json(services); // Retourner les services en réponse
+        })
+        .catch(err => {
+            console.error('Erreur lors de la récupération des services :', err);
+            res.status(500).json({ error: 'Une erreur est survenue' });
+        });
+};*/
 
 /**
  * Récupère tous les services et les retourne en JSON
@@ -106,7 +141,8 @@ exports.getAllServices = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getAllServicesInJSON = (req, res, next) => {
+exports.getAllServicesInJSON = async (req, res, next) => {
+    await sequelize.query('USE dentiste');
     return Service.findAll({
         order: [['name', 'ASC']]
     })
@@ -126,7 +162,8 @@ exports.getAllServicesInJSON = (req, res, next) => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.getAllServicesWithPro  = () => {
+exports.getAllServicesWithPro  = async () => {
+    await sequelize.query('USE dentiste');
     return Service.findAll({
         where: { obsolete: 0 },
         order: [['name', 'ASC']],
@@ -142,9 +179,10 @@ exports.getAllServicesWithPro  = () => {
  * @param {Object} res - L'objet de la réponse Express. Renvoie un message de succès en cas de mise à jour réussie.
  * @param {Function} next - La fonction middleware à exécuter ensuite.
  */
-exports.delete = (req, res, next) => {
+exports.delete = async (req, res, next) => {
     const id = req.params.id; // ou une autre logique pour obtenir l'ID
-  
+    
+    await sequelize.query('USE dentiste');
     // Modèle Sequelize pour l'objet que vous voulez supprimer, par exemple 'Item'
     Service.destroy({
       where: { id: id } // condition de correspondance

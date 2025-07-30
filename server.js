@@ -23,7 +23,7 @@ const normalizePort = val => {
 };
 
 // Définition du port sur lequel le serveur va écouter
-const port = normalizePort('3002');
+const port = normalizePort('3000');
 app.set('port', port);
 
 /**
@@ -63,11 +63,18 @@ server.on('listening', () => {
   console.log('Listening on ' + bind); // Log lors du démarrage de l'écoute du serveur
 });
 
-// Synchronisation de la base de données puis démarrage du serveur
-sequelize.sync({ force: false }) // Utilisez { force: true } pour forcer la recréation de la table
+// Ajouter la commande SQL pour utiliser explicitement la base de données "dentiste"
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connexion à la base de données réussie');
+    return sequelize.query('USE dentiste');  // Utiliser explicitement la base de données dentiste
+  })
+  .then(() => {
+    
+    return sequelize.sync({ force: false });  // Synchroniser les tables après avoir sélectionné la base
+  })
   .then(() => {
     console.log('La base de données a été synchronisée');
-    // Le serveur commence à écouter sur le port spécifié
     server.listen(port, '0.0.0.0', () => {
       console.log(`Server running on port ${port}`);
     });
@@ -75,3 +82,4 @@ sequelize.sync({ force: false }) // Utilisez { force: true } pour forcer la recr
   .catch(err => {
     console.error('Erreur lors de la synchronisation de la base de données :', err);
   });
+

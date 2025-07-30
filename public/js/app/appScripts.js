@@ -3,7 +3,7 @@ const getById = id => document.getElementById(id);
 //Variables globales
 let glo = {
     urls: {
-        base: 'http://localhost:3000/',
+        base: 'http://my1prod.com/nodejsmysql/',
         takeAppointment: 'takeAppointment',
         connexion: 'connexion',
         service: 'service/',
@@ -59,7 +59,7 @@ if(getById('takeAppointment')){
     });
 }
 
-if(location.pathname === '/login' && servicesHTMLSelect){
+if(location.pathname === '/nodejsmysql/login' && servicesHTMLSelect){
     servicesHTMLSelect.addEventListener('change', function(e){ getServiceInfos(e.target.value); });
     newsHTMLSelect.addEventListener('change', function(e){ getNewsInfos(e.target.value); });
     schedulesHTMLSelect.addEventListener('change', function(e){ getSchedulesInfos(e.target.value); });
@@ -106,7 +106,7 @@ if(location.pathname === '/login' && servicesHTMLSelect){
     getById('deleteNewsButton').addEventListener('click', function(e){ deleteNews(newsHTMLSelect.value); });
     getById('deleteSchedulesButton').addEventListener('click', function(e){ deleteSchedules(schedulesHTMLSelect.value); });
 }
-else if(location.pathname === '/service'){
+else if(location.pathname === '/nodejsmysql/service'){
     const serviceHTMLItem = {
         select    : getById('serviceId'),
         cardTitle : getById('serviceDescription'),
@@ -166,7 +166,7 @@ function addListenerOnForm(formId, enPoint, method = 'POST', idVarName = false, 
             }
           }
   
-          fetch('http://localhost:3000/' + enPoint + param, fetchOptions)
+          fetch(glo.urls.base + enPoint + param, fetchOptions)
           .then(response => response.json())
           .then(data => {
             console.log('Succès:', data);

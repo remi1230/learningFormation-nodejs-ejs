@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Service'
+    modelName: 'Service',
+    //schema: 'dentiste',
   });
 
   return Service;
