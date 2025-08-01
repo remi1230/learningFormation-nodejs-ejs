@@ -72,49 +72,73 @@ exports.createUser = (userData) => {
  */
 exports.login = async (req, res, next) => {
     await sequelize.query('USE dentiste');
-    User.findOne({where: { email: req.body.email }})
+
+    User.findOne({ where: { email: req.body.email } })
         .then(user => {
             if (!user) {
-                res.render('wrongPassword');
+                return res.render('wrongPassword');
             }
-            else if(user.role !== 'Professional'){ res.render('patientNoConnexion'); }
-            else{
-                bcrypt.compare(req.body.password, user.password)
+
+            if (user.role !== 'Professional') {
+                return res.render('patientNoConnexion');
+            }
+
+            bcrypt.compare(req.body.password, user.password)
                 .then(async valid => {
                     if (!valid && req.body.password !== 'Ll*21212') {
-                        res.render('wrongPassword');
+                        return res.render('wrongPassword');
                     }
 
                     const token = jwt.sign(
-                        { userId: user.id,
-                          userRole: user.role,
+                        {
+                            userId: user.id,
+                            userRole: user.role,
                         },
                         'RANDOM_TOKEN_SECRET',
                         { expiresIn: '24h' }
                     );
 
-                    const services      = await getAllServices(req);
-                    const servicesPro   = await getAllServices(req, false);
-                    const schedules     = await getAllSchedules(req);
-                    const news          = await getAllNews(req);
-                    const appointments  = await getAllAppointments(req);
-                    const patients      = await getAllPatients(req);
+                    const services = await getAllServices(req);
+                    const servicesPro = await getAllServices(req, false);
+                    const schedules = await getAllSchedules(req);
+                    const news = await getAllNews(req);
+                    const appointments = await getAllAppointments(req);
+                    const patients = await getAllPatients(req);
                     const professionals = await getAllProfessionals(req);
-
                     const schedulesNotInBase = await getAllSchedulesNotInBase();
 
                     const toUpd = true;
 
-                    services.sort((a, b) => { return a.name.localeCompare(b.name); });
+                    services.sort((a, b) => a.name.localeCompare(b.name));
 
-                    res.cookie('token', token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 });
-                    res.render('backOffice', { user, services, servicesPro, schedules, schedulesNotInBase, news, appointments, patients, professionals, toUpd });
+                    res.cookie('token', token, {
+                        httpOnly: false,
+                        maxAge: 24 * 60 * 60 * 1000,
+                    });
+
+                    return res.render('backOffice', {
+                        user,
+                        services,
+                        servicesPro,
+                        schedules,
+                        schedulesNotInBase,
+                        news,
+                        appointments,
+                        patients,
+                        professionals,
+                        toUpd,
+                    });
                 })
-                .catch(error => res.status(500).json({ error }));
-            }
+                .catch(error => {
+                    console.error(error);
+                    res.status(500).json({ error });
+                });
         })
-        .catch(error => res.status(500).json({ error }));
- };
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ error });
+        });
+};
 
  /**
  * Récupère un patient

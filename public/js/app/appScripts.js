@@ -3,7 +3,7 @@ const getById = id => document.getElementById(id);
 //Variables globales
 let glo = {
     urls: {
-        base: 'http://my1prod.com/nodejsmysql/',
+        base: 'https://my1prod.com/nodejsmysql/',
         takeAppointment: 'takeAppointment',
         connexion: 'connexion',
         service: 'service/',
