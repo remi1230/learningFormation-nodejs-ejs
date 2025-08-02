@@ -3,20 +3,28 @@
 <head>
     <meta charset="utf-8">
     <title>Cabinet Dupont</title>
-    <link rel="icon" type="image/png" href="/nodejsmysql/public/img/logo.png">
-    <link rel="stylesheet" href="/nodejsmysql/public/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/nodejsmysql/public/css/app/appStyles.css">
-    <script src="/nodejsmysql/public/js/bootstrap/bootstrap.bundle.min.js" defer></script>
-    <script src="/nodejsmysql/public/js/app/appScripts.js" defer></script>
+    <link rel="icon" type="image/png" href="<%= baseUrl %>/public/img/logo.png">
+    <link rel="stylesheet" href="<%= baseUrl %>/public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="<%= baseUrl %>/public/css/app/appStyles.css">
+    <script src="<%= baseUrl %>/public/js/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <script src="<%= baseUrl %>/public/js/app/appScripts.js" defer></script>
+
+    <!-- Base URL globale pour les fichiers JS -->
+    <script>
+        const BASE_PROT = '<%= protUrl %>';
+        const BASE_HOST = '<%= hostUrl %>';
+        const BASE_URL  = '<%= baseUrl %>';
+    </script>
+
 </head>
 <body>
     <header id="appHeader">
         <nav>
             <ul id="navigation-menu">
-                <li><a href="/nodejsmysql/">Accueil</a></li>
-                <li><a href="/nodejsmysql/cabinet" target="">Cabinet</a></li>
-                <li><a href="/nodejsmysql/service" target="">Services</a></li>
-                <li><a href="/nodejsmysql/news" target="">Actualités</a></li>
+                <li><a href="<%= baseUrl %>/">Accueil</a></li>
+                <li><a href="<%= baseUrl %>/cabinet">Cabinet</a></li>
+                <li><a href="<%= baseUrl %>/service">Services</a></li>
+                <li><a href="<%= baseUrl %>/news">Actualités</a></li>
             </ul>
         </nav>
     </header>

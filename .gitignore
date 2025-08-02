@@ -1,3 +1,76 @@
-/node_modules
-app.js
-.env
+# ────────────────────────────────────────────────────────────────────────────
+# Système / IDE
+# ────────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# VSCode / WebStorm / IntelliJ / etc.
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ────────────────────────────────────────────────────────────────────────────
+# Logs et rapports d’erreur
+# ────────────────────────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+logs/
+*.tgz
+
+# ────────────────────────────────────────────────────────────────────────────
+# Node modules & dépendances
+# ────────────────────────────────────────────────────────────────────────────
+# racine
+node_modules/
+# sous-dossiers (backend, frontend, etc.)
+**/node_modules/
+
+# ────────────────────────────────────────────────────────────────────────────
+# Environnements & clés secrètes
+# ────────────────────────────────────────────────────────────────────────────
+# ignore tous les .env, .env.* (développement, production, test, ...)
+**/.env
+**/.env.*
+
+# (optionnel) conserver un fichier d’exemple
+!.env.example
+
+# ────────────────────────────────────────────────────────────────────────────
+# Build / génération
+# ────────────────────────────────────────────────────────────────────────────
+# Frontend Vite
+frontend/dist/
+frontend/.vite/
+
+# si tu as un dossier build ailleurs
+dist/
+build/
+
+# Coverage & rapports de tests
+coverage/
+**/coverage/
+
+# fichiers temporaires générés
+npm-packages-offline-cache/
+.pnpm-store
+
+# ────────────────────────────────────────────────────────────────────────────
+# Docker / Containers
+# ────────────────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+.env.docker
+*.log
+
+# ────────────────────────────────────────────────────────────────────────────
+# Autres
+# ────────────────────────────────────────────────────────────────────────────
+*.tgz
+*.zip

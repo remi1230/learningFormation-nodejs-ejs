@@ -3,7 +3,7 @@ const getById = id => document.getElementById(id);
 //Variables globales
 let glo = {
     urls: {
-        base: 'https://my1prod.com/nodejsmysql/',
+        base: `${BASE_PROT === 'https' ? 'https/my1prod.com/' : 'http://localhost:3000/'}`,
         takeAppointment: 'takeAppointment',
         connexion: 'connexion',
         service: 'service/',
@@ -59,7 +59,7 @@ if(getById('takeAppointment')){
     });
 }
 
-if(location.pathname === '/nodejsmysql/login' && servicesHTMLSelect){
+if(location.pathname === `${BASE_URL}/login` && servicesHTMLSelect){
     servicesHTMLSelect.addEventListener('change', function(e){ getServiceInfos(e.target.value); });
     newsHTMLSelect.addEventListener('change', function(e){ getNewsInfos(e.target.value); });
     schedulesHTMLSelect.addEventListener('change', function(e){ getSchedulesInfos(e.target.value); });
@@ -101,12 +101,12 @@ if(location.pathname === '/nodejsmysql/login' && servicesHTMLSelect){
     //Appointment
     addListenerOnForm('updAppointmentForm', 'appointment/upd/', 'PUT', 'appointmentId', appointmentUpdated, function(){ return undefined; });
 
-    //Suppression Service, News et Schedules
+    //Suppression Service, News et Schedulespath
     getById('deleteServiceButton').addEventListener('click', function(e){ deleteService(servicesHTMLSelect.value); });
     getById('deleteNewsButton').addEventListener('click', function(e){ deleteNews(newsHTMLSelect.value); });
     getById('deleteSchedulesButton').addEventListener('click', function(e){ deleteSchedules(schedulesHTMLSelect.value); });
 }
-else if(location.pathname === '/nodejsmysql/service'){
+else if(location.pathname === `${BASE_URL}/service`){
     const serviceHTMLItem = {
         select    : getById('serviceId'),
         cardTitle : getById('serviceDescription'),
