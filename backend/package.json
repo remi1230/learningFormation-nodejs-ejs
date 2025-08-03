@@ -25,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "@adminjs/express": "^6.1.1",
+    "@adminjs/sequelize": "^4.1.1",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
@@ -37,5 +39,6 @@
     "mysql2": "^3.14.3",
     "path": "^0.12.7",
     "sequelize": "^6.37.2"
-  }
+  },
+  "proxy": "http://localhost:3000"
 }

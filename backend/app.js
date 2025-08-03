@@ -59,12 +59,12 @@ const serviceRoutes     = require('./routes/service');
 const schedulesRoutes   = require('./routes/schedules');
 const newsRoutes        = require('./routes/news');
 const appointmentRoutes = require('./routes/appointment');
-app.use('/', mainRoutes);
-app.use('/', userRoutes);
-app.use('/', serviceRoutes);
-app.use('/', schedulesRoutes);
-app.use('/', newsRoutes);
-app.use('/', appointmentRoutes);
+app.use('/api', mainRoutes);
+app.use('/api', userRoutes);
+app.use('/api', serviceRoutes);
+app.use('/api', schedulesRoutes);
+app.use('/api', newsRoutes);
+app.use('/api', appointmentRoutes);
 
 // Exportation de l'application pour utilisation dans d'autres fichiers, par exemple le serveur
 module.exports = app;

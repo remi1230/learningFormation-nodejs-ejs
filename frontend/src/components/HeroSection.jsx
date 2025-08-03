@@ -24,9 +24,6 @@ export default function Home() {
             <p className="text-justify prose-lg">
                 Notre équipe vous accompagne avec bienveillance à chaque étape de votre parcours de soins, dans une atmosphère chaleureuse et professionnelle.
             </p>
-            <p className="text-justify prose-lg">
-                Souhaitez-vous que le texte soit plus court, plus technique, ou rédigé en langage institutionnel ou marketing ? Je peux aussi le décliner en version accroche pour site web ou présentation brochure.
-            </p>
         </div>
       </div>
     </section>

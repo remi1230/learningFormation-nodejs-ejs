@@ -33,6 +33,9 @@ export default function Header() {
             <a className="btn btn-ghost btn-sm" href="/">
               Accueil
             </a>
+            <a className="btn btn-ghost btn-sm" href="/connexion">
+              Connexion
+            </a>
             {/* On passe de <a> à <label> pour déclencher le modal */}
             <label
               htmlFor="modal-horaires"

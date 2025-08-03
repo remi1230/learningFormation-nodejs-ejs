@@ -1,24 +1,17 @@
-/**
- * Configuration des routes pour les services.
- * Chaque route est protégée par le middleware d'authentification pour s'assurer
- * que seuls les utilisateurs authentifiés peuvent effectuer des opérations.
- */
-
 // Importation du framework Express et création d'un nouveau routeur
-const express = require('express');
-const router  = express.Router();
+const express             = require('express');
+const crudPkg             = require('express-crud-router');
+const sequelizeConnector  = require('express-crud-router-sequelize-v6-connector');
+const router              = express.Router();
 
-// Importation du middleware d'authentification pour sécuriser les routes,
-// et du contrôleur gérant les actions sur les services
-const auth        = require('../middleware/auth');
-const serviceCtrl = require('../controllers/service');
+// Récupère bien la fonction CRUD et la fonction connector
+const crud                = crudPkg.default  || crudPkg;
+const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
-//Routes
-router.get('/services/json', serviceCtrl.getAllServicesInJSON);
-router.get('/service/delete/:id', auth, serviceCtrl.delete);
-router.get('/service/:id', serviceCtrl.getServiceById);
-router.post('/service/add', auth, serviceCtrl.add);
-router.put('/service/upd/:id', auth, serviceCtrl.update);
+const { Service } = require('../model');
+
+// Auto‐CRUD sur /services-crud
+router.use(crud('/services-crud', connectSequelize(Service)));
 
 // Exportation du routeur configuré pour utilisation dans l'application principale
 module.exports = router;
