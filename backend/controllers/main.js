@@ -11,13 +11,13 @@ const { getAll: getAllSchedules } = require('./schedules');
 //Routes
 exports.indexPage = async (req, res, next) => {
     try {
-        const services  = await getAllServices(req, false);
-        const schedules = await getAllSchedules(req);
+        /*const services  = await getAllServices(req, false);
+        const schedules = await getAllSchedules(req);*/
 
         res.render('index', {
             title: 'Test page',
-            services: services,
-            schedules: schedules,
+            /*services: services,
+            schedules: schedules,*/
         });
     } catch (error) {
         console.error(error);
@@ -91,4 +91,5 @@ exports.newsPage = async (req, res, next) => {
     }
 };
 
-exports.connexionPage  = async (req, res, next) => { res.render('connexion');  };
+//exports.connexionPage  = async (req, res, next) => { res.render('connexion');  };
+exports.rdvPage  = async (req, res, next) => { res.render('rdv');  };

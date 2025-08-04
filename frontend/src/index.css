@@ -43,3 +43,37 @@
 
 @plugin "@tailwindcss/typography";
 
+
+@layer components {
+  /* vos utilitaires Tailwind “normaux” */
+  .rbc-toolbar button {
+    @apply btn btn-sm btn-primary;
+  }
+
+  /* même sélecteur, mais en CSS “pur” pour forcer la priorité */
+  .rbc-toolbar button {
+    background-color: hsl(var(--p)) !important;   /* couleur primaire DaisyUI */
+    color:          hsl(var(--pc)) !important;    /* texte primaire-content */
+  }
+
+  /* bouton actif (Semaine/Mois) */
+  .rbc-toolbar .rbc-active {
+    @apply btn btn-sm btn-secondary;
+  }
+}
+
+
+.rbc-event-label {
+  display: none !important;
+}
+.rbc-event {
+  width: 100% !important;
+  left: 0 !important;
+  margin: 0 !important;
+}
+.rbc-events-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+

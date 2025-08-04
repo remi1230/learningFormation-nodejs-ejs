@@ -9,8 +9,6 @@ const crud                = crudPkg.default  || crudPkg;
 const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
 const { Schedules } = require('../model');
-const auth          = require('../middleware/auth');
-const schedulesCtrl = require('../controllers/schedules');
 
 // Auto‐CRUD sur /schedules-crud
 router.use(crud('/schedules-crud', connectSequelize(Schedules)));

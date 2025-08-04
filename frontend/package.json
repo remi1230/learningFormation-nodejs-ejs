@@ -12,8 +12,11 @@
   "dependencies": {
     "@tanstack/react-query": "^5.84.1",
     "daisyui": "^5.0.50",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.536.0",
+    "moment": "^2.30.1",
     "react": "^19.1.0",
+    "react-big-calendar": "^1.19.4",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {

@@ -1,25 +1,31 @@
-/**
- * Configuration des routes pour les appointments.
- * Chaque route est protégée par le middleware d'authentification pour s'assurer
- * que seuls les utilisateurs authentifiés peuvent effectuer des opérations.
- */
+// backend/routes/appointment.js
+const express             = require('express');
+const crudPkg             = require('express-crud-router');
+const sequelizeConnector  = require('express-crud-router-sequelize-v6-connector');
 
-// Importation du framework Express et création d'un nouveau routeur
-const express = require('express');
-const router  = express.Router();
+// Récupère bien la fonction CRUD et la fonction connector
+const crud                = crudPkg.default  || crudPkg;
+const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
-// Importation du middleware d'authentification pour sécuriser les routes,
-// et du contrôleur gérant les actions sur les appointments
-const auth            = require('../middleware/auth');
-const appointmentCtrl = require('../controllers/appointment');
+const { Appointment } = require('../model');
 
-//Routes
-router.post('/appointment/add', appointmentCtrl.add);
-router.put('/appointment/upd/:id', auth, appointmentCtrl.update);
-router.get('/appointments', auth, appointmentCtrl.getAll);
-router.get('/appointment/byService/:serviceId', auth, appointmentCtrl.getByService);
-router.get('/appointment/byPatient/:patientId', auth, appointmentCtrl.getByPatient);
-router.get('/appointment/:id', auth, appointmentCtrl.getById);
+const router = express.Router();
 
-// Exportation du routeur configuré pour utilisation dans l'application principale
+// Auto‐CRUD sur /appointments
+router.use(crud('/appointments-crud', connectSequelize(Appointment)));
+router.get('/appointments-by-service', async (req, res) => {
+  const { serviceId } = req.query
+
+  try {
+    const rdvs = await Appointment.findAll({
+      where: { serviceId }
+    })
+
+    res.json(rdvs)
+  } catch (error) {
+    console.error('Erreur lors de la récupération des RDV par service:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
 module.exports = router;

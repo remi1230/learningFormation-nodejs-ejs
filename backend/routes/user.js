@@ -9,7 +9,6 @@ const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
 const { User }            = require('../model');
 const userCtrl            = require('../controllers/user');
-const auth                = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -17,12 +16,6 @@ const router = express.Router();
 router.use(crud('/users', connectSequelize(User)));
 
 // Tes routes custom après
-router.post('/signup',               userCtrl.signup);
-router.post('/login',                userCtrl.login);
-router.get('/patient/:id',   auth,   userCtrl.getPatientById);
-router.get('/professional/:id', auth, userCtrl.getProfessionalById);
-router.get('/professionals',   auth,  userCtrl.getProfessionals);
-router.post('/professional/add', auth, userCtrl.addProfessional);
-router.put('/professional/upd/:id', auth, userCtrl.updateProfessional);
+router.post('/login', userCtrl.login);
 
 module.exports = router;

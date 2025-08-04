@@ -18,4 +18,9 @@ module.exports = {
     darkTheme: "dark",
     logs: true,
   },
+  safelist: [
+    {
+      pattern: /^(bg|text|hover:bg|hover:text)-(primary|secondary)(|-(focus|content|hover))$/,
+    },
+  ]
 };
