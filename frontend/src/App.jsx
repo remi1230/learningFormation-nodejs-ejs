@@ -5,6 +5,7 @@ import Home            from './pages/Home';
 import TakeAppointment from './pages/TakeAppointment';
 import Login           from './pages/Login';
 import BackOffice      from './pages/BackOffice';
+import PrivateRoute    from './components/PrivateRoute';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
 
           {/* catch-all : renvoie à la home si URL inconnue */}
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="backoffice" element={<PrivateRoute requiredRole="Professional"><BackOffice /></PrivateRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>

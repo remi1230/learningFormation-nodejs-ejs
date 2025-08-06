@@ -1,6 +1,8 @@
+const bcrypt = require('bcrypt');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends DataTypes.Model {
-    // Ajouter des méthodes à la classe ici si nécessaire
+    // Méthodes d'instance ou de classe éventuelles
   }
 
   User.init({
@@ -32,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    // Ajouter fullName comme un attribut virtuel
     fullName: {
       type: DataTypes.VIRTUAL,
       get() {
@@ -42,8 +43,28 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    //schema: 'dentiste',
-    // Les options comme les hooks ou les méthodes d'instance peuvent être ajoutées ici
+    hooks: {
+      /**
+       * Hachage du mot de passe avant la création
+       */
+      beforeCreate: async (user) => {
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+
+      /**
+       * Hachage du mot de passe avant la mise à jour
+       * (uniquement si le champ password a été modifié)
+       */
+      beforeUpdate: async (user) => {
+        if (user.changed('password')) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      }
+    }
   });
 
   return User;

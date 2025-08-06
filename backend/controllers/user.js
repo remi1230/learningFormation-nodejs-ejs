@@ -74,7 +74,7 @@ exports.login = async (req, res, next) => {
   try {
     await sequelize.query('USE dentiste');
     const user = await User.findOne({ where: { email: req.body.email } });
-    if (!user || user.role !== 'Professional') {
+    if (!user) {
       return res.status(401).json({ error: 'Accès refusé' });
     }
     const valid = await bcrypt.compare(req.body.password, user.password);
@@ -93,7 +93,7 @@ exports.login = async (req, res, next) => {
     });
 
     // vous pouvez renvoyer aussi les données de backoffice si besoin
-    return res.status(200).json({ success: true });
+    return res.status(200).json(user);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Erreur serveur' });

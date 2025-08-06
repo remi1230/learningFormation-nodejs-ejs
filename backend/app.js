@@ -7,6 +7,11 @@ const { sequelize } = require('./model');
 const path          = require('path');
 const cors          = require('cors');
 
+//Auth google
+const session = require('cookie-session');
+const passport = require('passport');
+require('./config/passport');
+
 // Importation du modèle de BDD
 const Appointment = require('./model/Appointment');
 const News        = require('./model/News');
@@ -17,6 +22,13 @@ const Service     = require('./model/Service');
 // Création d'une instance d'application Express
 const app = express();
 //app.set('view engine', 'ejs');
+
+app.use(session({
+  secret: 'supersecret',
+  maxAge: 24 * 60 * 60 * 1000
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Configuration de la connexion à MySQL
 const port = 3000;
@@ -65,6 +77,10 @@ app.use('/api', serviceRoutes);
 app.use('/api', schedulesRoutes);
 app.use('/api', newsRoutes);
 app.use('/api', appointmentRoutes);
+
+//Auth Google
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes); 
 
 // Exportation de l'application pour utilisation dans d'autres fichiers, par exemple le serveur
 module.exports = app;

@@ -1,27 +1,62 @@
-// src/components/SchedulesList.jsx
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Pencil } from "lucide-react";
+import { Plus } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 export default function SchedulesList() {
   const queryClient = useQueryClient();
+  const [formData, setFormData] = useState({
+    id: null,
+    dayOfWeek: '',
+    openTime: '',
+    closeTime: '',
+    order: null,
+  });
 
-  // 1️⃣ useQuery avec le format objet
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  // Liste des jours et leur ordre
+  const daysOfWeek = [
+  { label: 'Lundi', value: 'Lundi', order: 1 },
+  { label: 'Mardi', value: 'Mardi', order: 2 },
+  { label: 'Mercredi', value: 'Mercredi', order: 3 },
+  { label: 'Jeudi', value: 'Jeudi', order: 4 },
+  { label: 'Vendredi', value: 'Vendredi', order: 5 },
+  { label: 'Samedi', value: 'Samedi', order: 6 },
+];
+
+  // Récupération des horaires
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['schedules'],
     queryFn: async () => {
-      const res = await fetch('/api/schedules-crud', {
-        credentials: 'include',  // proxy Vite → localhost:3000
-      });
+      const res = await fetch('/api/schedules-crud', { credentials: 'include' });
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       return res.json();
     },
   });
 
-  // 2️⃣ useMutation lui aussi en « object »
+  // Création ou modification
+  const saveMutation = useMutation({
+    mutationFn: async (formData) => {
+      const method = formData.id ? 'PUT' : 'POST';
+      const url = formData.id
+        ? `/api/schedules-crud/${formData.id}`
+        : '/api/schedules-crud';
+      const res = await fetch(url, {
+        method,
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] });
+      setFormData({ id: null, dayOfWeek: '', openTime: '', closeTime: '' });
+    },
+  });
+
+  // Suppression
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
       const res = await fetch(`/api/schedules-crud/${id}`, {
@@ -31,62 +66,137 @@ export default function SchedulesList() {
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       return id;
     },
-    onSuccess: () => {
-      // invalide et refetch automatiquement
-      queryClient.invalidateQueries({ queryKey: ['schedules'] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['schedules'] }),
   });
 
   if (isLoading) return <p>Chargement…</p>;
-  if (isError)  return <p className="text-red-500">Erreur : {error.message}</p>;
+  if (isError) return <p className="text-red-500">Erreur : {error.message}</p>;
 
-  // selon que l’API renvoie { rows, count } ou juste un tableau
-  const schedules = data.rows ?? data;
+  const schedules = data.rows ?? data.sort((a, b) => a.order - b.order);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Jour</th>
-            <th>AM</th>
-            <th>PM</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {schedules.map((schedule) => (
-            <tr key={schedule.id}>
-              <td>{schedule.id}</td>
-              <td>{schedule.dayOfWeek}</td>
-              <td >{schedule.openTime}</td>
-              <td >{schedule.closeTime}</td>
-              <td>
-                <button
-                  className="btn btn-sm btn-ghost mr-2"
-                  onClick={() => {
-                    // TODO: navigate(`/schedules/${schedule.id}`)
-                  }}
-                >
-                  Voir
-                </button>
-                <button
-                  className="btn btn-sm btn-error"
-                  onClick={() => {
-                    if (!window.confirm('Supprimer cet utilisateur ?')) return;
-                    deleteMutation.mutate(schedule.id);
-                  }}
-                >
-                  {deleteMutation.isLoading && deleteMutation.variables === schedule.id
-                    ? '…'
-                    : 'Supprimer'}
-                </button>
-              </td>
+    <div className="space-y-8">
+      {/* FORMULAIRE */}
+      <form
+        className="flex flex-row flex-wrap items-end gap-4 justify-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          saveMutation.mutate(formData);
+        }}
+      >
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Jour</span>
+          </label>
+          <select
+            className="select select-bordered"
+            value={formData.dayOfWeek}
+            onChange={(e) => {
+              const selectedDay = daysOfWeek.find(d => d.value === e.target.value);
+              setFormData({
+                ...formData,
+                dayOfWeek: selectedDay.value,
+                order: selectedDay.order,
+              });
+            }}
+            required
+          >
+            <option value="">-- Sélectionner --</option>
+            {daysOfWeek.map((day) => (
+              <option key={day.value} value={day.value}>
+                {day.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Ouverture</span>
+          </label>
+          <input
+            type="time"
+            className="input input-bordered"
+            value={formData.openTime}
+            onChange={(e) => setFormData({ ...formData, openTime: e.target.value })}
+            required
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Fermeture</span>
+          </label>
+          <input
+            type="time"
+            className="input input-bordered"
+            value={formData.closeTime}
+            onChange={(e) => setFormData({ ...formData, closeTime: e.target.value })}
+            required
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">&nbsp;</span>
+          </label>
+          <button type="submit" className="btn btn-primary">
+            {formData.id ? <Pencil className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          </button>
+        </div>
+      </form>
+
+      {/* TABLEAU */}
+      <div className="overflow-x-auto">
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Jour</th>
+              <th>Ouverture</th>
+              <th>Fermeture</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {schedules.map((s) => (
+              <tr key={s.id}>
+                <td>{s.id}</td>
+                <td>{s.dayOfWeek}</td>
+                <td>{s.openTime}</td>
+                <td>{s.closeTime}</td>
+                <td className="space-x-2">
+                  <button
+                    className="btn btn-sm btn-outline"
+                    onClick={() =>
+                      setFormData({
+                        id: s.id,
+                        dayOfWeek: s.dayOfWeek,
+                        openTime: s.openTime,
+                        closeTime: s.closeTime,
+                        order: s.order,
+                      })
+                    }
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button
+                    className="btn btn-sm btn-error"
+                    onClick={() => {
+                      if (confirm('Supprimer cet horaire ?')) {
+                        deleteMutation.mutate(s.id);
+                      }
+                    }}
+                  >
+                    {deleteMutation.isLoading && deleteMutation.variables === s.id ? '...' : <Trash2 className="w-4 h-4" />}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -62,6 +62,17 @@
   }
 }
 
+.rbc-time-header-content,
+.rbc-time-content,
+.rbc-time-gutter {
+  display: flex;
+}
+
+.rbc-time-header-content > .rbc-row,
+.rbc-day-slot {
+  flex: 1 1 0;
+  min-width: 0;
+}
 
 .rbc-event-label {
   display: none !important;

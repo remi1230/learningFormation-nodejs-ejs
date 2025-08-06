@@ -31,7 +31,6 @@ export default function Header() {
     <div className="flex-1"><a className="flex-1 text-xl font-bold btn btn-ghost btn-sm" href="/">Clinique dentaire</a></div>
     <nav className="flex-none space-x-2">
       <a className="btn btn-ghost btn-sm" href="/">Accueil</a>
-      <a className="btn btn-ghost btn-sm" href="/take-appointment">RDV</a>
       <a className="btn btn-ghost btn-sm" href="/connexion">Connexion</a>
       <label htmlFor="modal-horaires" className="btn btn-ghost btn-sm cursor-pointer">
         <Clock className="h-6 w-6" />

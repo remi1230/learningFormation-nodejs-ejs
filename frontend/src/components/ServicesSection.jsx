@@ -30,21 +30,21 @@ export default function ServicesSection() {
   return (
     <section className="flex flex-col mb-48">
       <h2 className="text-4xl font-bold text-primary mb-8">Services proposés</h2>
-      <div className="overflow-x-auto grid grid-cols-1 lg:grid-cols-2 gap-4 justify-items-center">
-        {services.map((service) => (
-          <div
-            key={service.id ?? service.name}
-            className="card card-xs w-96 card-border border-info shadow-sm text-info"
-          >
-            <div className="card-body items-center">
-              <h3 className="card-title text-2xl text-info">{service.name}</h3>
-              <p className="text-lg">{service.description}</p>
-              <div className="justify-end card-actions text-base">
-                <p>{service.detail}</p>
-              </div>
+      <div className="flex flex-wrap gap-6 items-start">
+      {services.map((service) => (
+        <div key={service.id} className="card w-96 min-h-64 border border-info text-info shadow-sm">
+          <div className="collapse collapse-arrow">
+            <input type="checkbox" />
+            <div className="collapse-title text-xl font-semibold">
+              <h3 className="text-info">{service.name}</h3>
+              <p className="text-base">{service.description}</p>
+            </div>
+            <div className="collapse-content text-sm leading-relaxed text-justify">
+              <p>{service.detail}</p>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
       </div>
     </section>
   )

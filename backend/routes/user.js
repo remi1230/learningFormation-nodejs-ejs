@@ -13,7 +13,7 @@ const userCtrl            = require('../controllers/user');
 const router = express.Router();
 
 // Auto‐CRUD sur /users
-router.use(crud('/users', connectSequelize(User)));
+router.use(crud('/users-crud', connectSequelize(User)));
 
 // Tes routes custom après
 router.post('/login', userCtrl.login);

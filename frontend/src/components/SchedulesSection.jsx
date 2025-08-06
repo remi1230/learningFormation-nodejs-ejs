@@ -25,7 +25,7 @@ export default function SchedulesSection() {
   if (isError)   return <p className="text-red-500">Erreur : {error.message}</p>
 
   // Si ton CRUD renvoie { rows, count } :
-  const schedules = data.rows ?? data
+  const schedules = data.rows ?? data.sort((a, b) => a.order - b.order)
 
   return (
     <section className="flex flex-col text-center mt-6">
