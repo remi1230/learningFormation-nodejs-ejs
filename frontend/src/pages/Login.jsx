@@ -1,18 +1,22 @@
 // src/pages/Login.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 export default function Connexion() {
   const navigate = useNavigate();
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
+  const { setUser }             = useAuth();
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
 
     try {
+      // 1️⃣ Connexion (login)
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,27 +29,30 @@ export default function Connexion() {
         return;
       }
 
-      // ↙️ On récupère la réponse brute
-      const data = await res.json();
-      console.log('Login response payload →', data);
+      // 2️⃣ Ensuite on récupère l'utilisateur
+      const me = await axios.get('http://localhost:3000/api/auth/me', {
+        withCredentials: true
+      });
 
-      // ↙️ On prend soit data.user, soit data directement
-      const user = data.user || data;
+      const user = me.data;
 
-      if (!user || !user.role) {
-        setError("Impossible de récupérer votre rôle. Contactez l'administrateur.");
-        return;
-      }
+      // 3️⃣ Mettre à jour l'état global ou parent
+      //if (onLoginSuccess) onLoginSuccess(user);
 
+      // 4️⃣ Redirection selon le rôle
       if (user.role === 'Professional') {
         navigate('/backoffice');
       } else {
         navigate('/take-appointment');
       }
+
     } catch (err) {
       console.error(err);
       setError('Une erreur est survenue, veuillez réessayer');
     }
+
+    const me = await axios.get('/api/auth/me', { withCredentials: true });
+    setUser(me.data);
   };
 
   const handleGoogleLogin = () => {
@@ -102,7 +109,7 @@ export default function Connexion() {
           >
             Se connecter avec Google
           </button>
-      </div>
+        </div>
       </div>
     </div>
   );

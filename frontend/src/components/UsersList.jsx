@@ -1,23 +1,39 @@
-// src/components/UsersList.jsx
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { Pencil, Plus, Trash2 } from "lucide-react"
 
 export default function UsersList() {
   const queryClient = useQueryClient()
 
   const [editingUser, setEditingUser] = useState(null)
-  const [newUser, setNewUser] = useState({ email: '', role: 'Patient', password: '' })
+  const [newUser, setNewUser] = useState({ email: '', role: 'Professional', password: '', firstName: '', lastName: '' })
+  const [userToDelete, setUserToDelete] = useState(null) // 🆕 Pour la modale
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', 'professionals'],
     queryFn: async () => {
-      const res = await fetch('/api/users-crud', { credentials: 'include' })
+      const res = await fetch('/api/users-crud/by-role/Professional', { credentials: 'include' })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       return res.json()
     },
   })
 
+  const {
+    data: dataServices,
+    isLoading: isLoadingServices,
+    isError: isErrorServices,
+    error: errorServices,
+  } = useQuery({
+    queryKey: ['services'],
+    queryFn: async () => {
+      const res = await fetch('/api/services-crud', { credentials: 'include' });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      return res.json();
+    },
+  });
+
   const users = data?.rows ?? data ?? []
+  const servs = dataServices?.rows ?? dataServices ?? []
 
   const createMutation = useMutation({
     mutationFn: async user => {
@@ -32,7 +48,7 @@ export default function UsersList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
-      setNewUser({ email: '', role: 'Patient', password: '' })
+      setNewUser({ email: '', role: 'Professional', password: '', firstName: '', lastName: '' })
     },
   })
 
@@ -47,6 +63,7 @@ export default function UsersList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
+      setUserToDelete(null)
     },
   })
 
@@ -75,39 +92,62 @@ export default function UsersList() {
       {/* ➕ Formulaire de création */}
       <form
         onSubmit={e => {
-          e.preventDefault()
-          if (!newUser.email || !newUser.password) {
-            alert('Email et mot de passe requis')
-            return
-          }
-          createMutation.mutate(newUser)
+          e.preventDefault();
+          createMutation.mutate(newUser);
         }}
         className="flex gap-4 flex-wrap items-end"
       >
-        <input
-          className="input input-bordered"
-          placeholder="Email"
-          value={newUser.email}
-          onChange={e => setNewUser({ ...newUser, email: e.target.value })}
-        />
-        <select
-          className="select select-bordered"
-          value={newUser.role}
-          onChange={e => setNewUser({ ...newUser, role: e.target.value })}
-        >
-          <option value="Patient">Patient</option>
-          <option value="Professional">Professional</option>
-        </select>
-        <input
-          className="input input-bordered"
-          type="password"
-          placeholder="Mot de passe"
-          value={newUser.password}
-          onChange={e => setNewUser({ ...newUser, password: e.target.value })}
-        />
-        <button type="submit" className="btn btn-primary">
-          Ajouter
-        </button>
+
+          <div className="flex flex-wrap gap-4 w-full">
+            <div className="flex flex-row gap-4 w-full">
+              <input
+                required
+                className="input input-bordered flex-[15]"
+                placeholder="Nom"
+                value={newUser.firstName}
+                onChange={e => setNewUser({ ...newUser, firstName: e.target.value })}
+              />
+              <input
+                required
+                className="input input-bordered flex-[9]"
+                placeholder="Prénom"
+                value={newUser.lastName}
+                onChange={e => setNewUser({ ...newUser, lastName: e.target.value })}
+              />
+              <input
+                required
+                className="input input-bordered flex-[20]"
+                placeholder="Email"
+                value={newUser.email}
+                onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+              />
+              <input
+                required
+                className="input input-bordered flex-[5]"
+                type="password"
+                placeholder="Mot de passe"
+                value={newUser.password}
+                onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+              />
+           </div>
+           <div className="flex flex-wrap gap-4 w-full">
+            <select
+              className="select select-bordered"
+              value={newUser.serviceId}
+              onChange={e => setNewUser({ ...newUser, serviceId: e.target.value })}
+            >
+              <option value="">-- Choisir un service --</option>
+              {servs.map(service => (
+                <option key={service.id} value={service.id}>
+                  {service.name}
+                </option>
+              ))}
+            </select>
+            <button type="submit" className="btn btn-primary">
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       </form>
 
       {/* 📋 Liste des utilisateurs */}
@@ -116,8 +156,9 @@ export default function UsersList() {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Nom</th>
+              <th>Prénom</th>
               <th>Email</th>
-              <th>Rôle</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -129,6 +170,32 @@ export default function UsersList() {
                   {editingUser?.id === user.id ? (
                     <input
                       className="input input-sm"
+                      value={editingUser.lastName}
+                      onChange={e =>
+                        setEditingUser({ ...editingUser, lastName: e.target.value })
+                      }
+                    />
+                  ) : (
+                    user.lastName
+                  )}
+                </td>
+                <td>
+                  {editingUser?.id === user.id ? (
+                    <input
+                      className="input input-sm"
+                      value={editingUser.firstName}
+                      onChange={e =>
+                        setEditingUser({ ...editingUser, firstName: e.target.value })
+                      }
+                    />
+                  ) : (
+                    user.firstName
+                  )}
+                </td>
+                <td>
+                  {editingUser?.id === user.id ? (
+                    <input
+                      className="input input-sm"
                       value={editingUser.email}
                       onChange={e =>
                         setEditingUser({ ...editingUser, email: e.target.value })
@@ -136,22 +203,6 @@ export default function UsersList() {
                     />
                   ) : (
                     user.email
-                  )}
-                </td>
-                <td>
-                  {editingUser?.id === user.id ? (
-                    <select
-                      className="select select-sm"
-                      value={editingUser.role}
-                      onChange={e =>
-                        setEditingUser({ ...editingUser, role: e.target.value })
-                      }
-                    >
-                      <option value="Patient">Patient</option>
-                      <option value="Professional">Professional</option>
-                    </select>
-                  ) : (
-                    <span className="capitalize">{user.role}</span>
                   )}
                 </td>
                 <td className="space-x-2">
@@ -176,17 +227,13 @@ export default function UsersList() {
                         className="btn btn-sm btn-ghost"
                         onClick={() => setEditingUser(user)}
                       >
-                        Modifier
+                        <Pencil className="w-4 h-4" />
                       </button>
                       <button
                         className="btn btn-sm btn-error"
-                        onClick={() => {
-                          if (window.confirm('Supprimer cet utilisateur ?')) {
-                            deleteMutation.mutate(user.id)
-                          }
-                        }}
+                        onClick={() => setUserToDelete(user.id)}
                       >
-                        Supprimer
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </>
                   )}
@@ -196,6 +243,27 @@ export default function UsersList() {
           </tbody>
         </table>
       </div>
+
+      {/* 🧾 Modal DaisyUI */}
+      {userToDelete && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Supprimer cet utilisateur ?</h3>
+            <p className="py-4">Cette action est irréversible.</p>
+            <div className="modal-action">
+              <form method="dialog" className="flex gap-2">
+                <button className="btn" onClick={() => setUserToDelete(null)}>Annuler</button>
+                <button
+                  className="btn btn-error"
+                  onClick={() => deleteMutation.mutate(userToDelete)}
+                >
+                  Supprimer
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   )
 }

@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Pencil } from "lucide-react";
-import { Plus } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
 export default function SchedulesList() {
   const queryClient = useQueryClient();
@@ -14,17 +12,17 @@ export default function SchedulesList() {
     order: null,
   });
 
-  // Liste des jours et leur ordre
-  const daysOfWeek = [
-  { label: 'Lundi', value: 'Lundi', order: 1 },
-  { label: 'Mardi', value: 'Mardi', order: 2 },
-  { label: 'Mercredi', value: 'Mercredi', order: 3 },
-  { label: 'Jeudi', value: 'Jeudi', order: 4 },
-  { label: 'Vendredi', value: 'Vendredi', order: 5 },
-  { label: 'Samedi', value: 'Samedi', order: 6 },
-];
+  const [scheduleToDelete, setScheduleToDelete] = useState(null); // 🔴 Pour stocker le créneau à supprimer
 
-  // Récupération des horaires
+  const daysOfWeek = [
+    { label: 'Lundi', value: 'Lundi', order: 1 },
+    { label: 'Mardi', value: 'Mardi', order: 2 },
+    { label: 'Mercredi', value: 'Mercredi', order: 3 },
+    { label: 'Jeudi', value: 'Jeudi', order: 4 },
+    { label: 'Vendredi', value: 'Vendredi', order: 5 },
+    { label: 'Samedi', value: 'Samedi', order: 6 },
+  ];
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['schedules'],
     queryFn: async () => {
@@ -34,7 +32,6 @@ export default function SchedulesList() {
     },
   });
 
-  // Création ou modification
   const saveMutation = useMutation({
     mutationFn: async (formData) => {
       const method = formData.id ? 'PUT' : 'POST';
@@ -52,11 +49,10 @@ export default function SchedulesList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] });
-      setFormData({ id: null, dayOfWeek: '', openTime: '', closeTime: '' });
+      setFormData({ id: null, dayOfWeek: '', openTime: '', closeTime: '', order: null });
     },
   });
 
-  // Suppression
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
       const res = await fetch(`/api/schedules-crud/${id}`, {
@@ -66,7 +62,10 @@ export default function SchedulesList() {
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       return id;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['schedules'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] });
+      setScheduleToDelete(null);
+    },
   });
 
   if (isLoading) return <p>Chargement…</p>;
@@ -84,11 +83,8 @@ export default function SchedulesList() {
           saveMutation.mutate(formData);
         }}
       >
-
         <div className="form-control">
-          <label className="label">
-            <span className="label-text">Jour</span>
-          </label>
+          <label className="label"><span className="label-text">Jour</span></label>
           <select
             className="select select-bordered"
             value={formData.dayOfWeek}
@@ -112,9 +108,7 @@ export default function SchedulesList() {
         </div>
 
         <div className="form-control">
-          <label className="label">
-            <span className="label-text">Ouverture</span>
-          </label>
+          <label className="label"><span className="label-text">Ouverture</span></label>
           <input
             type="time"
             className="input input-bordered"
@@ -125,9 +119,7 @@ export default function SchedulesList() {
         </div>
 
         <div className="form-control">
-          <label className="label">
-            <span className="label-text">Fermeture</span>
-          </label>
+          <label className="label"><span className="label-text">Fermeture</span></label>
           <input
             type="time"
             className="input input-bordered"
@@ -138,9 +130,7 @@ export default function SchedulesList() {
         </div>
 
         <div className="form-control">
-          <label className="label">
-            <span className="label-text">&nbsp;</span>
-          </label>
+          <label className="label"><span className="label-text">&nbsp;</span></label>
           <button type="submit" className="btn btn-primary">
             {formData.id ? <Pencil className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           </button>
@@ -183,13 +173,11 @@ export default function SchedulesList() {
                   </button>
                   <button
                     className="btn btn-sm btn-error"
-                    onClick={() => {
-                      if (confirm('Supprimer cet horaire ?')) {
-                        deleteMutation.mutate(s.id);
-                      }
-                    }}
+                    onClick={() => setScheduleToDelete(s.id)}
                   >
-                    {deleteMutation.isLoading && deleteMutation.variables === s.id ? '...' : <Trash2 className="w-4 h-4" />}
+                    {deleteMutation.isLoading && deleteMutation.variables === s.id
+                      ? '...'
+                      : <Trash2 className="w-4 h-4" />}
                   </button>
                 </td>
               </tr>
@@ -197,6 +185,29 @@ export default function SchedulesList() {
           </tbody>
         </table>
       </div>
+
+      {/* MODAL DAISYUI */}
+      {scheduleToDelete && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Supprimer cet horaire ?</h3>
+            <p className="py-4">Cette action est irréversible.</p>
+            <div className="modal-action">
+              <form method="dialog" className="flex gap-2">
+                <button className="btn" onClick={() => setScheduleToDelete(null)}>
+                  Annuler
+                </button>
+                <button
+                  className="btn btn-error"
+                  onClick={() => deleteMutation.mutate(scheduleToDelete)}
+                >
+                  Supprimer
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 }

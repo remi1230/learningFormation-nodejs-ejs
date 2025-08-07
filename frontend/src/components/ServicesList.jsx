@@ -1,9 +1,7 @@
 // src/components/ServicesList.jsx
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Pencil } from "lucide-react";
-import { Plus } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 
 export default function ServicesList() {
   const queryClient = useQueryClient();
@@ -13,6 +11,8 @@ export default function ServicesList() {
     description: '',
     detail: ''
   });
+
+  const [serviceToDelete, setServiceToDelete] = useState(null); // 🆕 stocke l'id du service à supprimer
 
   const {
     data,
@@ -31,9 +31,7 @@ export default function ServicesList() {
   const saveMutation = useMutation({
     mutationFn: async (service) => {
       const res = await fetch(
-        service.id
-          ? `/api/services-crud/${service.id}`
-          : '/api/services-crud',
+        service.id ? `/api/services-crud/${service.id}` : '/api/services-crud',
         {
           method: service.id ? 'PUT' : 'POST',
           credentials: 'include',
@@ -61,6 +59,7 @@ export default function ServicesList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['services'] });
+      setServiceToDelete(null);
     },
   });
 
@@ -71,31 +70,34 @@ export default function ServicesList() {
 
   return (
     <div className="space-y-8">
+      {/* 🔽 Formulaire */}
       <form
-        className="flex flex-wrap gap-4 items-end"
+        className="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault();
           saveMutation.mutate(formData);
         }}
       >
-        <div className="form-control grow">
-          <label className="label">Désignation</label>
-          <input
-            className="input input-bordered w-full"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-          />
-        </div>
+        <div className="flex flex-row gap-4">
+          <div className="basis-1/3 form-control grow">
+            <label className="label">Désignation</label>
+            <input
+              className="input input-bordered w-full"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+          </div>
 
-        <div className="form-control grow">
-          <label className="label">Description</label>
-          <textarea
-            className="textarea textarea-bordered w-full"
-            rows={2}
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          />
+          <div className="basis-2/3 form-control grow">
+            <label className="label">Description</label>
+            <input
+              className="input input-bordered w-full"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              required
+            />
+          </div>
         </div>
 
         <div className="form-control grow">
@@ -126,7 +128,7 @@ export default function ServicesList() {
         </div>
       </form>
 
-
+      {/* 🔽 Tableau */}
       <div className="overflow-y-auto h-120">
         <table className="table table-zebra w-full">
           <thead>
@@ -154,10 +156,7 @@ export default function ServicesList() {
                   </button>
                   <button
                     className="btn btn-sm btn-error"
-                    onClick={() => {
-                      if (!window.confirm('Supprimer ce service ?')) return;
-                      deleteMutation.mutate(service.id);
-                    }}
+                    onClick={() => setServiceToDelete(service.id)}
                   >
                     {deleteMutation.isLoading && deleteMutation.variables === service.id
                       ? '…'
@@ -169,6 +168,29 @@ export default function ServicesList() {
           </tbody>
         </table>
       </div>
+
+      {/* 🔽 Modal DaisyUI de confirmation */}
+      {serviceToDelete && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Confirmer la suppression</h3>
+            <p className="py-4">Voulez-vous vraiment supprimer ce service ?</p>
+            <div className="modal-action">
+              <form method="dialog" className="flex gap-2">
+                <button className="btn" onClick={() => setServiceToDelete(null)}>
+                  Annuler
+                </button>
+                <button
+                  className="btn btn-error"
+                  onClick={() => deleteMutation.mutate(serviceToDelete)}
+                >
+                  Supprimer
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 }

@@ -167,7 +167,6 @@ export default function TakeAppointment() {
   return (
     <div>
       <div className="toast toast-top toast-center z-50" id="toast-container"></div>
-      <p className="text-center text-4xl">Prendre un rendez-vous</p>
       <div className="join gap-12 mt-12">
         <div className="flex-[1] flex flex-col justify-center">
           <div className="form-control">

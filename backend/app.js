@@ -41,7 +41,10 @@ sequelize.sync({ force: false }).then(() => {
 });
 
 // Activation du CORS pour permettre les requêtes cross-origin
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // ← ton frontend (Vite)
+  credentials: true               // ← autorise les cookies
+}));
 
 // Configuration du cache HTTP pour toutes les réponses
 app.use((req, res, next) => {
