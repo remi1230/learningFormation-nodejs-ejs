@@ -2,6 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
+import RichEditor from './ui-kit/RichEditor'
+import RichTextView from './ui-kit/RichTextView';
 
 export default function ServicesList() {
   const queryClient = useQueryClient();
@@ -102,14 +104,11 @@ export default function ServicesList() {
 
         <div className="form-control grow">
           <label className="label">Détails</label>
-          <textarea
-            className="textarea textarea-bordered w-full"
-            rows={3}
-            value={formData.detail}
-            onChange={(e) => setFormData({ ...formData, detail: e.target.value })}
+          <RichEditor
+            value={formData.detail || ''}
+            onChange={(html) => setFormData({ ...formData, detail: html })}
           />
         </div>
-
         <div className="flex gap-2">
           <button type="submit" className="btn btn-primary h-fit">
             {formData.id ? 'Modifier' : <Plus className="w-4 h-4" />}
@@ -146,7 +145,11 @@ export default function ServicesList() {
                 <td>{service.id}</td>
                 <td>{service.name}</td>
                 <td>{service.description}</td>
-                <td>{service.detail}</td>
+                <td>
+                  <div className="line-clamp-3">
+                    <RichTextView html={service.detail} />
+                  </div>
+              </td>
                 <td className="space-y-2">
                   <button
                     className="btn btn-sm btn-secondary"

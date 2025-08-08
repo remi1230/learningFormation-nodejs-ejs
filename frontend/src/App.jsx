@@ -7,6 +7,7 @@ import TakeAppointment from './pages/TakeAppointment';
 import Login           from './pages/Login';
 import BackOffice      from './pages/BackOffice';
 import PrivateRoute    from './components/PrivateRoute';
+import './styles/tiptap.css'
 
 export default function App() {
   const [user, setUser] = useState(null);

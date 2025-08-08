@@ -1,5 +1,6 @@
 // src/components/ServicesSection.jsx
 import { useQuery } from '@tanstack/react-query'
+import RichTextView from './ui-kit/RichTextView';
 
 export default function ServicesSection() {
   const {
@@ -30,17 +31,17 @@ export default function ServicesSection() {
   return (
     <section className="flex flex-col mb-48">
       <h2 className="text-4xl font-bold text-primary mb-8">Services proposés</h2>
-      <div className="flex flex-wrap gap-6 items-start">
+      <div className="flex flex-col gap-6 items-center">
       {services.map((service) => (
-        <div key={service.id} className="card w-96 min-h-64 border border-info text-info shadow-sm">
+        <div key={service.id} className="card w-full border shadow-sm">
           <div className="collapse collapse-arrow">
             <input type="checkbox" />
-            <div className="collapse-title text-xl font-semibold">
-              <h3 className="text-info">{service.name}</h3>
-              <p className="text-base">{service.description}</p>
+            <div className="collapse-title p-0 text-xl font-semibold">
+              <h3>{service.name}</h3>
+              <p className="text-xl">{service.description}</p>
             </div>
-            <div className="collapse-content text-sm leading-relaxed text-justify">
-              <p>{service.detail}</p>
+            <div className="collapse-content text-base leading-relaxed text-justify">
+              <RichTextView html={service.detail} />
             </div>
           </div>
         </div>

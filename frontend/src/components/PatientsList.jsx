@@ -2,17 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Pencil, Plus, Trash2 } from "lucide-react"
 
-export default function UsersList() {
+export default function CollabsList() {
   const queryClient = useQueryClient()
 
   const [editingUser, setEditingUser] = useState(null)
-  const [newUser, setNewUser] = useState({ email: '', role: 'Professional', password: '', firstName: '', lastName: '' })
+  const [newUser, setNewUser] = useState({ email: '', role: 'Patient', password: '', firstName: '', lastName: '' })
   const [userToDelete, setUserToDelete] = useState(null) // 🆕 Pour la modale
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['users', 'professionals'],
+    queryKey: ['users', 'Patients'],
     queryFn: async () => {
-      const res = await fetch('/api/users-crud/by-role/Professional', { credentials: 'include' })
+      const res = await fetch('/api/users-crud/by-role/Patient', { credentials: 'include' })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       return res.json()
     },
@@ -48,7 +48,7 @@ export default function UsersList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
-      setNewUser({ email: '', role: 'Professional', password: '', firstName: '', lastName: '' })
+      setNewUser({ email: '', role: 'Patient', password: '', firstName: '', lastName: '' })
     },
   })
 
@@ -131,18 +131,6 @@ export default function UsersList() {
               />
            </div>
            <div className="flex flex-wrap gap-4 w-full">
-            <select
-              className="select select-bordered"
-              value={newUser.serviceId}
-              onChange={e => setNewUser({ ...newUser, serviceId: e.target.value })}
-            >
-              <option value="">-- Choisir un service --</option>
-              {servs.map(service => (
-                <option key={service.id} value={service.id}>
-                  {service.name}
-                </option>
-              ))}
-            </select>
             <button type="submit" className="btn btn-primary">
               <Plus className="w-4 h-4" />
             </button>

@@ -24,10 +24,11 @@ router.get('/users-crud/by-role/:role', async (req, res) => {
       attributes: { exclude: ['password'] },
       include: {
         model: Service,
-      }
+      },
+      order: [['id', 'ASC']],
     });
 
-    res.json(users);
+    res.json({ rows: users }); // important pour que le frontend continue de fonctionner
   } catch (error) {
     console.error('Erreur /users-crud/by-role/:role :', error);
     res.status(500).json({ error: 'Erreur serveur' });

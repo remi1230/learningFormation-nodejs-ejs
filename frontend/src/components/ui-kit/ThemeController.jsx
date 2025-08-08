@@ -1,8 +1,6 @@
-// src/components/ui-kit/ThemeController.jsx
 import { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react"; // si vous voulez une petite icône
+import { ChevronDown } from "lucide-react";
 
-// Liste des thèmes tels que déclarés dans index.css
 const themes = [
   { value: "light",        label: "Light" },
   { value: "dark",         label: "Dark" },
@@ -42,28 +40,47 @@ const themes = [
   { value: "default",      label: "Default" },
 ];
 
-
 export default function ThemeController() {
-  // 1) Charger la valeur initiale depuis localStorage ou fallback sur "default"
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "default"
   );
 
-  // 2) À chaque changement, on met à jour l'attribut HTML et le localStorage
+  // Appliquer thème à l'attribut HTML et sauvegarder dans localStorage
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Navigation au clavier
+    useEffect(() => {
+    const handleKeyDown = (e) => {
+      // On vérifie Ctrl + Flèche gauche/droite
+      if (e.ctrlKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+        e.preventDefault();
+        const currentIndex = themes.findIndex((t) => t.value === theme);
+        let newIndex;
+
+        if (e.key === "ArrowRight") {
+          newIndex = (currentIndex + 1) % themes.length; // suivant
+        } else {
+          newIndex = (currentIndex - 1 + themes.length) % themes.length; // précédent
+        }
+
+        setTheme(themes[newIndex].value);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [theme]);
+
   return (
     <div className="dropdown dropdown-end">
-      {/* Bouton principal */}
       <button tabIndex={0} className="btn btn-ghost flex items-center gap-1">
         Thème: <span className="capitalize">{theme}</span>
         <ChevronDown size={16} />
       </button>
 
-      {/* Menu déroulant */}
       <ul
         tabIndex={0}
         className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44"
