@@ -16,12 +16,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     obsolete: {
       type: DataTypes.BOOLEAN,
-      default: false
+      defaultValue: false
+    },
+    color: {
+      type: DataTypes.STRING(7), // ex: "#ff0000"
+      allowNull: true
     }
   }, {
     sequelize,
     modelName: 'Service',
-    //schema: 'dentiste',
   });
 
   return Service;

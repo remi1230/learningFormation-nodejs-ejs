@@ -20,11 +20,8 @@ export default function Header() {
 
   return (
     <>
-      {/* 1️⃣ Le toggle checkbox pour le modal */}
       <input type="checkbox" id="modal-horaires" className="modal-toggle" />
-
-      {/* 2️⃣ Le modal lui-même */}
-      <div className="modal">
+      <div className="modal" role="dialog">
         <div className="modal-box max-w-3xl relative">
           {/* Bouton de fermeture */}
           <label
@@ -34,16 +31,20 @@ export default function Header() {
             ✕
           </label>
 
-          {/* Contenu du modal : on y met ton composant */}
+          {/* Contenu */}
           <SchedulesSection />
         </div>
+
+        {/* Clic extérieur → ferme le modal */}
+        <label className="modal-backdrop" htmlFor="modal-horaires"></label>
       </div>
+
 
       {/* 3️⃣ Le header avec le label qui déclenche l’ouverture */}
       <header className="bg-base-200/80 backdrop-blur-md shadow-md sticky top-0 z-50">
         <div className="navbar px-4">
           <div className=" flex items-baseline flex-1">
-            <div><a className="flex-1 text-xl font-bold btn btn-ghost btn-sm" href="/">Clinique dentaire - {title}</a></div>
+            <div><a className="flex-1 text-xl font-bold btn btn-ghost btn-sm p-1 mr-1" href="/">Clinique dentaire - {title}</a></div>
             {loading ? (
               <span className="text-sm text-gray-400">Chargement...</span>
             ) : user ? (

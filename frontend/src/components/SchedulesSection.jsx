@@ -29,10 +29,10 @@ export default function SchedulesSection() {
 
   return (
     <section className="flex flex-col text-center mt-6">
-      <h2 className="text-4xl font-bold text-primary mb-2">Horaires d'ouverture</h2>
+      <h2 className="text-2xl font-bold mb-2">--- Horaires d'ouverture ---</h2>
       <div className="overflow-x-auto">
         <table className="table table-lg mt-0 mb-0 text-center">
-          <thead className="text-2xl">
+          <thead className="text-xl">
             <tr>
               <th>Jour</th>
               <th>Matin</th>

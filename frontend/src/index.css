@@ -92,12 +92,22 @@
   width: 100% !important;
 }
 
-.rbc-today{
-  background-color: var(--color-base-300);
+.rbc-today {
+  background-color: var(--color-base-300) !important;
+  filter: hue-rotate(0.75turn) brightness(0.92) saturate(0.5);
 }
-.rbc-time-slot[style]{
-  background-color: var(--color-base-content/50);
-  color : var(--color-info);
+.rbc-time-slot[style] {
+  background-color: var(--color-base-300) !important;
+  filter: hue-rotate(0.5turn) brightness(1.5) saturate(2);
+  color: var(--color-info) !important;
+}
+.rbc-allday-cell{
+  display: none;
+}
+
+
+.line-clamp-3 img {
+  width: 40px;
 }
 
 

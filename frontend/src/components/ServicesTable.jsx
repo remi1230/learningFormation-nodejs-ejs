@@ -1,0 +1,70 @@
+import { memo } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
+import RichTextView from './ui-kit/RichTextView'
+
+const HtmlPreview = memo(function HtmlPreview({ html }) {
+  return (
+    <div className="line-clamp-3">
+      <RichTextView html={html} />
+    </div>
+  )
+}, (prev, next) => prev.html === next.html)
+
+const ServicesTable = memo(function ServicesTable({
+  services,
+  onEdit,
+  onAskDelete,
+  deleting,
+  isDeletingId,
+}) {
+  return (
+    <div className="overflow-y-scroll h-80 [scrollbar-gutter:stable]">
+      <table className="table table-zebra table-sm table-fixed w-full">
+        <colgroup>
+          <col style={{ width: '70px' }} />
+          <col style={{ width: '240px' }} />
+          <col style={{ width: '90px' }} />
+          <col />
+          <col />
+          <col style={{ width: '120px' }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Désignation</th>
+            <th>Couleur</th>
+            <th>Description</th>
+            <th>Détails</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {services.map((s) => (
+            <tr key={s.id}>
+              <td>{s.id}</td>
+              <td className="font-medium">{s.name}</td>
+              <td className="text-center align-middle">
+                <div
+                  style={{ backgroundColor: s.color || '#000000' }}
+                  className="w-4 h-4 rounded-full inline-block"
+                />
+              </td>
+              <td>{s.description}</td>
+              <td><HtmlPreview html={s.detail} /></td>
+              <td className="flex flex-col items-center gap-2 pt-4">
+                <button className="btn btn-sm btn-secondary" onClick={() => onEdit(s)}>
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button className="btn btn-sm btn-error" onClick={() => onAskDelete(s.id)}>
+                  {deleting && isDeletingId === s.id ? '…' : <Trash2 className="w-4 h-4" />}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+})
+
+export default ServicesTable

@@ -111,9 +111,7 @@ export default function RichEditor({ value = '', onChange }) {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Underline,
       Placeholder.configure({ placeholder: 'Écrivez ici…' }),
-      Link.configure({ autolink: true, openOnClick: true }),
       Image,
       Table.configure({ resizable: true }),
       TableRow,
@@ -221,7 +219,7 @@ export default function RichEditor({ value = '', onChange }) {
       <EditorContent
         editor={editor}
         className="max-w-none cursor-text focus:outline-none"
-        style={{ minHeight: 220, padding: 12 }}
+        style={{ minHeight: 20, padding: 12, }}
       />
     </div>
   )

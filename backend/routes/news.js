@@ -1,25 +1,17 @@
-/**
- * Configuration des routes pour les news.
- * Chaque route est protégée par le middleware d'authentification pour s'assurer
- * que seuls les utilisateurs authentifiés peuvent effectuer des opérations.
- */
-
 // Importation du framework Express et création d'un nouveau routeur
-const express = require('express');
-const router  = express.Router();
+const express             = require('express');
+const crudPkg             = require('express-crud-router');
+const sequelizeConnector  = require('express-crud-router-sequelize-v6-connector');
+const router              = express.Router();
 
-// Importation du middleware d'authentification pour sécuriser les routes,
-// et du contrôleur gérant les actions sur les services
-const auth     = require('../middleware/auth');
-const multer   = require('../middleware/multer-config');
-const newsCtrl = require('../controllers/news');
+// Récupère bien la fonction CRUD et la fonction connector
+const crud                = crudPkg.default  || crudPkg;
+const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
-//Routes
-router.get('/news/json', newsCtrl.getAllNewsInJSON);
-router.get('/news/:id', newsCtrl.getNewsById);
-router.get('/news/delete/:id', newsCtrl.delete);
-router.post('/news/add', auth, multer, newsCtrl.add);
-router.put('/news/upd/:id', auth, multer, newsCtrl.update);
+const { News } = require('../model');
+
+// Auto‐CRUD sur /news-crud
+router.use(crud('/news-crud', connectSequelize(News)));
 
 // Exportation du routeur configuré pour utilisation dans l'application principale
 module.exports = router;

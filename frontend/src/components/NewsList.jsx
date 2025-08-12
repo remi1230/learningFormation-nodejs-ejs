@@ -1,56 +1,58 @@
+// src/components/news/NewsList.jsx
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useMemo, useState } from 'react'
-import ServicesForm from './ServicesForm'
-import ServicesTable from './ServicesTable'
-import ConfirmDeleteModal from './ServicesDeleteConfirm'
+import NewsForm from './NewsForm'
+import NewsTable from './NewsTable'
+import NewsDeleteConfirm from './NewsDeleteConfirm'
+import "cally"
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 
-async function fetchServices() {
-  const res = await fetch('/api/services-crud', { credentials: 'include' })
+async function fetchNews() {
+  const res = await fetch('/api/news-crud', { credentials: 'include' })
   if (!res.ok) throw new Error(`Erreur ${res.status}`)
   return res.json()
 }
 
-export default function ServicesList() {
+export default function NewsList() {
   const queryClient = useQueryClient()
-  const [editing, setEditing] = useState(null)     // service en cours d’édition (objet)
+  const [editing, setEditing] = useState(null)     // objet news en cours d’édition
   const [toDelete, setToDelete] = useState(null)   // id à supprimer
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['services'],
-    queryFn: fetchServices,
+    queryKey: ['news'],
+    queryFn: fetchNews,
   })
 
-  const services = data?.rows ?? data ?? []
+  const news = data?.rows ?? data ?? []
 
-  // Trie léger (par nom, puis id)
-  const sorted = useMemo(() => {
-    return [...services].sort((a, b) =>
-      (a?.name || '').localeCompare(b?.name || '') || (a?.id ?? 0) - (b?.id ?? 0)
+  const sortedNews = useMemo(() => {
+    return [...news].sort((a, b) =>
+      new Date(b?.publishedDate ?? 0) - new Date(a?.publishedDate ?? 0)
     )
-  }, [services])
+  }, [news])
 
   const saveMutation = useMutation({
-    mutationFn: async (service) => {
-      const url = service.id ? `/api/services-crud/${service.id}` : '/api/services-crud'
-      const method = service.id ? 'PUT' : 'POST'
+    mutationFn: async (theNew) => {
+      const url = theNew.id ? `/api/news-crud/${theNew.id}` : '/api/news-crud'
+      const method = theNew.id ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(service),
+        body: JSON.stringify(theNew),
       })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] })
+      queryClient.invalidateQueries({ queryKey: ['news'] })
       setEditing(null)
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await fetch(`/api/services-crud/${id}`, {
+      const res = await fetch(`/api/news-crud/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       })
@@ -58,7 +60,7 @@ export default function ServicesList() {
       return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] })
+      queryClient.invalidateQueries({ queryKey: ['news'] })
       setToDelete(null)
     },
   })
@@ -72,31 +74,27 @@ export default function ServicesList() {
   const handleCancelEdit = useCallback(() => setEditing(null), [])
 
   if (isLoading) return <p>Chargement…</p>
-  if (isError)   return <p className="text-red-500">Erreur : {error.message}</p>
+  if (isError) return <p className="text-red-500">Erreur : {error.message}</p>
 
   return (
     <div className="space-y-8">
-      <ServicesForm
-        initial={editing}
-        onSave={handleSave}
-        onCancel={handleCancelEdit}
-        isSaving={saveMutation.isLoading}
-      />
+      {/* Formulaire (local state) */}
+      <NewsForm initial={editing} onSave={handleSave} onCancel={handleCancelEdit} isSaving={saveMutation.isLoading} />
 
-      <ServicesTable
-        services={sorted}
+      {/* Tableau (memo) */}
+      <NewsTable
+        news={sortedNews}
         onEdit={handleEdit}
         onAskDelete={handleAskDelete}
-        deleting={deleteMutation.isLoading}
         isDeletingId={deleteMutation.variables}
+        deleting={deleteMutation.isLoading}
       />
 
-      <ConfirmDeleteModal
+      {/* Modal confirmation suppression */}
+      <NewsDeleteConfirm
         open={!!toDelete}
         onCancel={() => setToDelete(null)}
         onConfirm={() => deleteMutation.mutate(toDelete)}
-        title="Confirmer la suppression"
-        message="Voulez-vous vraiment supprimer ce service ?"
       />
     </div>
   )

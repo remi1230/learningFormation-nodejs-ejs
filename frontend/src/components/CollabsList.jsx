@@ -116,6 +116,7 @@ export default function CollabsList() {
               />
               <input
                 required
+                autoComplete="email"
                 className="input input-bordered flex-[20]"
                 placeholder="Email"
                 value={newUser.email}
@@ -123,6 +124,7 @@ export default function CollabsList() {
               />
               <input
                 required
+                autoComplete="current-password"
                 className="input input-bordered flex-[5]"
                 type="password"
                 placeholder="Mot de passe"
@@ -184,7 +186,7 @@ export default function CollabsList() {
                       ))}
                     </select>
                   ) : (
-                    user.service?.name || '—'
+                    user.Service?.name || '—'
                   )}
                 </td>
                 <td>
