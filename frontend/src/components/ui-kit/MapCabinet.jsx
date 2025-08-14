@@ -1,128 +1,93 @@
 // src/components/MapCabinet.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
-import { GoogleMap, StreetViewPanorama, useLoadScript } from "@react-google-maps/api";
+import { useMemo, useRef, useState } from "react";
+import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
 
-// Vite
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-// CRA : const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-const containerStyle = { width: "100%", height: "480px" };
+const CONTAINER_STYLE = { width: "100%", height: "480px" };
+const MAP_ID = "TON_MAP_ID_ICI"; // ton “ID du style”
 
 export default function MapCabinet({
   lat = 47.0810,
   lng = 2.3988,
   zoom = 15,
-  label = "Cabinet dentaire",
-  showStreetViewToggle = true,
+  title = "Cabinet dentaire du Dr Dupont",
 }) {
   const center = useMemo(() => ({ lat, lng }), [lat, lng]);
-  const [streetView, setStreetView] = useState(false);
-
-  // on garde une ref sur l'instance de la map et sur le marker avancé
   const mapRef = useRef(null);
-  const advMarkerRef = useRef(null);
+  const markerRef = useRef(null);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: API_KEY,
-    // libraries: ["geometry","drawing"], // si besoin de mesures/outils
+    version: "weekly",
+    id: "google-map-script",
   });
 
-  // (Re)crée / monte le AdvancedMarker quand la map est prête et que l’on est en vue "carte"
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current || streetView) {
-      // si on passe en StreetView, on détache le marker (propre)
-      if (advMarkerRef.current) {
-        advMarkerRef.current.map = null;
-      }
-      return;
+  async function onMapLoad(map) {
+    mapRef.current = map;
+
+    // 1) Charger la lib "marker" de manière fiable
+    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+
+    // 2) Nettoyage si on re-crée
+    if (markerRef.current) {
+      markerRef.current.map = null;
+      markerRef.current = null;
     }
 
-    const map = mapRef.current;
-
-    // Option: joli pin avec lib "marker"
-    // (AdvancedMarkerElement et PinElement font partie de google.maps.marker)
-    const pin = new google.maps.marker.PinElement({
-      glyph: label?.[0]?.toUpperCase() || "•",
+    // 3) Pin par défaut (pas de HTML custom pour l’instant)
+    const pin = new PinElement({
+      glyph: title?.[0]?.toUpperCase() || "•",
       glyphColor: "#fff",
-      background: "#2563eb", // bleu Tailwind 600-ish
+      background: "#2563eb",
       borderColor: "#1e40af",
       scale: 1.1,
     });
 
-    // Détruit l’ancien si on re-crée
-    if (advMarkerRef.current) {
-      advMarkerRef.current.map = null;
-      advMarkerRef.current = null;
-    }
-
-    advMarkerRef.current = new google.maps.marker.AdvancedMarkerElement({
+    // 4) Création du repère avancé
+    const adv = new AdvancedMarkerElement({
       map,
       position: center,
-      title: label,
-      content: pin.element, // remplace le marqueur "classique"
+      title: String(title || ""),
+      content: pin.element,
+      zIndex: 999999,
+      collisionBehavior: "REQUIRED", // le plus “visible” possible
     });
 
-    // Cleanup si le composant unmount
-    return () => {
-      if (advMarkerRef.current) {
-        advMarkerRef.current.map = null;
-        advMarkerRef.current = null;
-      }
-    };
-  }, [isLoaded, center, label, streetView]);
+    adv.addListener("click", () => setInfoOpen(true));
+    markerRef.current = adv;
 
-  if (loadError) {
-    return (
-      <div className="p-4 border rounded-md text-red-600">
-        Erreur de chargement de Google Maps. Vérifie ta clé API et les restrictions.
-      </div>
-    );
+    // petite vérif visuelle : recenter/zoom
+    map.setCenter(center);
+    map.setZoom(zoom);
   }
 
-  if (!isLoaded) {
-    return <div className="skeleton w-full h-[480px] rounded-xl" />;
-  }
+  if (loadError) return <div className="p-4 text-red-600">Erreur de chargement Google Maps.</div>;
+  if (!isLoaded) return <div className="skeleton w-full h-[480px] rounded-xl" />;
 
   return (
-    <div className="rounded-xl overflow-hidden shadow">
-      {showStreetViewToggle && (
-        <div className="flex justify-end p-2 bg-base-200">
-          <button
-            className="btn btn-sm"
-            onClick={() => setStreetView((v) => !v)}
-            aria-pressed={streetView}
-          >
-            {streetView ? "Voir la carte" : "Street View"}
-          </button>
-        </div>
-      )}
-
+    <div className="overflow-hidden shadow-lg rounded-lg border border-accent">
       <GoogleMap
-        onLoad={(map) => (mapRef.current = map)}
-        mapContainerStyle={containerStyle}
+        onLoad={onMapLoad}
+        mapContainerStyle={CONTAINER_STYLE}
         center={center}
         zoom={zoom}
         options={{
-          fullscreenControl: false,
-          streetViewControl: false, // on gère nous-mêmes le toggle
-          mapTypeControl: false,
+          mapId: MAP_ID,            // tu peux TEMPORAIREMENT l’enlever pour tester
+          fullscreenControl: true,
+          streetViewControl: true,
+          mapTypeControl: true,
           gestureHandling: "cooperative",
-          clickableIcons: false,
+          clickableIcons: true,
         }}
       >
-        {streetView && (
-          <StreetViewPanorama
-            position={center}
-            visible
-            options={{
-              pov: { heading: 0, pitch: 0 },
-              zoom: 1,
-              addressControl: false,
-              linksControl: true,
-              panControl: true,
-              enableCloseButton: false,
-            }}
-          />
+        {infoOpen && (
+          <InfoWindow position={center} onCloseClick={() => setInfoOpen(false)}>
+            <div>
+              <strong>{title}</strong>
+              <div>{lat.toFixed(4)}, {lng.toFixed(4)}</div>
+            </div>
+          </InfoWindow>
         )}
       </GoogleMap>
     </div>

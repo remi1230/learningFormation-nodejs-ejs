@@ -1,7 +1,7 @@
 // src/components/SchedulesSection.jsx
 import { useQuery } from '@tanstack/react-query'
 
-export default function SchedulesSection() {
+export default function SchedulesSection({ title = "--- Horaires d'ouverture ---", size = "2xl", marginBottom = "2" }) {
   const {
     data,
     isLoading,
@@ -28,23 +28,16 @@ export default function SchedulesSection() {
   const schedules = data.rows ?? data.sort((a, b) => a.order - b.order)
 
   return (
-    <section className="flex flex-col text-center mt-6">
-      <h2 className="text-2xl font-bold mb-2">--- Horaires d'ouverture ---</h2>
+    <section className="flex flex-col text-center">
+      <h2 className={`text-${size} font-bold mb-${marginBottom}`}>{title}</h2>
       <div className="overflow-x-auto">
-        <table className="table table-lg mt-0 mb-0 text-center">
-          <thead className="text-xl">
-            <tr>
-              <th>Jour</th>
-              <th>Matin</th>
-              <th>Après-midi</th>
-            </tr>
-          </thead>
+        <table className="table table-zebra table-lg mt-0 mb-0 text-center">
           <tbody>
             {schedules.map((schedule) => (
               <tr key={schedule.id ?? schedule.dayOfWeek}>
                 <td>{schedule.dayOfWeek}</td>
-                <td>{schedule.openTime.slice(0, -3)}</td>
-                <td>{schedule.closeTime.slice(0, -3)}</td>
+                <td className="text-center">{schedule.openTime.slice(0, -3)}</td>
+                <td className="text-center">{schedule.closeTime.slice(0, -3)}</td>
               </tr>
             ))}
           </tbody>

@@ -5,6 +5,7 @@ import MainLayout      from './layout/MainLayout';
 import Home            from './pages/Home';
 import TakeAppointment from './pages/TakeAppointment';
 import Login           from './pages/Login';
+import LoginPro        from './pages/LoginPro';
 import BackOffice      from './pages/BackOffice';
 import PrivateRoute    from './components/PrivateRoute';
 import './styles/tiptap.css'
@@ -25,6 +26,7 @@ export default function App() {
 
           {/* sous-routes : http://.../connexion et /backoffice */}
           <Route path="connexion" element={<Login onLoginSuccess={(user) => setUser(user)} />} />
+          <Route path="connexion-pro" element={<LoginPro onLoginSuccess={(user) => setUser(user)} />} />
           <Route path="take-appointment" element={<TakeAppointment />} />
           <Route path="backoffice" element={<BackOffice />} />
 

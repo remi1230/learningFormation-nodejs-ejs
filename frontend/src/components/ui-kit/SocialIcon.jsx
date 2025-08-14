@@ -1,7 +1,7 @@
 'use client';
 
 
-export default function SocialIcon({ href, children, download = false }) {
+export default function SocialIcon({ href, children }) {
   return (
     <a
       href={href}

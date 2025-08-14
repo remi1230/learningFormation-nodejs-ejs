@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+@import "@fontsource/inter/100.css";
+@import "@fontsource/inter/200.css";
+@import "@fontsource/inter/300.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/inter/800.css";
+@import "@fontsource/inter/900.css";
+
+/* Déclare la famille pour générer l'utilitaire `font-inter` */
+@theme {
+  --font-inter: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                 Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+                 "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}
+
+/* Optionnel : Inter par défaut partout */
+:root { font-family: var(--font-inter); }
+
 /* DaisyUI + Typography, avec configuration des thèmes */
 @plugin "daisyui" {
   themes:
@@ -60,7 +80,14 @@
   .rbc-toolbar .rbc-active {
     @apply btn btn-sm btn-secondary;
   }
+
 }
+
+
+body {
+  @apply font-inter;
+}
+
 
 .ws-48 {
   width: 48.3% !important;
@@ -131,6 +158,7 @@
 .prose h5,
 .prose h6 {
   color: inherit !important;
+  background-color: unset !important;
 }
 
 /* Garder la mise en forme de Typography (listes, tables, blockquote, code...) */

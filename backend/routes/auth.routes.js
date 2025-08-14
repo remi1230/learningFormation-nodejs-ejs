@@ -37,4 +37,14 @@ router.get('/google/callback',
   }
 );
 
+// ▼▼ Déconnexion JWT (efface le cookie) ▼▼
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: 'lax',     // mets 'none' + secure:true si front et API sont sur domaines différents en prod HTTPS
+    secure: false,       // true en prod HTTPS
+  });
+  return res.sendStatus(204);
+});
+
 module.exports = router;

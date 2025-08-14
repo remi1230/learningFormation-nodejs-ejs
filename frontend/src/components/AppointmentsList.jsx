@@ -339,7 +339,7 @@ export default function TakeAppointment() {
               </div>
               <div className="flex flex-row gap-1 items-center">
                 <StatusIcon status="approved" />
-                <span className="text-xs">Accepté</span>
+                <span className="text-xs">Approuvé</span>
               </div>
             </div>
           </fieldset>

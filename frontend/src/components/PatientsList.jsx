@@ -124,12 +124,12 @@ export default function CollabsList() {
               />
               <input
                 required
-                autoComplete="current-password"
+                autoComplete="tel"
                 className="input input-bordered flex-[5]"
-                type="password"
-                placeholder="Mot de passe"
-                value={newUser.password}
-                onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+                type="tel"
+                placeholder="Téléphone"
+                value={newUser.phoneNumber}
+                onChange={e => setNewUser({ ...newUser, phoneNumber: e.target.value })}
               />
            </div>
            <div className="flex flex-wrap gap-4 w-full">
@@ -149,6 +149,7 @@ export default function CollabsList() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Email</th>
+              <th>Tél</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -193,6 +194,19 @@ export default function CollabsList() {
                     />
                   ) : (
                     user.email
+                  )}
+                </td>
+                <td>
+                  {editingUser?.id === user.id ? (
+                    <input
+                      className="input input-sm"
+                      value={editingUser.phoneNumber}
+                      onChange={e =>
+                        setEditingUser({ ...editingUser, phoneNumber: e.target.value })
+                      }
+                    />
+                  ) : (
+                    user.phoneNumber
                   )}
                 </td>
                 <td className="space-x-2">

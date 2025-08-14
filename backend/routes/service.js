@@ -8,7 +8,24 @@ const router              = express.Router();
 const crud                = crudPkg.default  || crudPkg;
 const connectSequelize    = sequelizeConnector.default || sequelizeConnector;
 
-const { Service } = require('../model');
+const { Service, User } = require('../model');
+
+router.get('/services-crud/with-collabs', async (req, res) => {
+  try {
+    const services = await Service.findAll({
+      include: {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName', 'phoneNumber', 'email'],
+      },
+      order: [['id', 'ASC']],
+    });
+
+    res.json({ rows: services }); // important pour que le frontend continue de fonctionner
+  } catch (error) {
+    console.error('Erreur /services-crud/with-collabs', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
 
 // Auto‐CRUD sur /services-crud
 router.use(crud('/services-crud', connectSequelize(Service)));

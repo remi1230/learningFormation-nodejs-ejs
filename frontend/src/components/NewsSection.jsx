@@ -30,7 +30,7 @@ export default function NewsSection() {
   const news = data.rows ?? data
 
   return (
-    <section className="flex flex-col mb-48">
+    <section className="flex flex-col mb-12">
       <h2 className="text-4xl font-bold text-primary mb-8">Actualités</h2>
       <div className="flex flex-col gap-12 items-center">
       {news.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate)).map((theNew) => (

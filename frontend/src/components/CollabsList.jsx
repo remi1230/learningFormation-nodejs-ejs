@@ -138,13 +138,22 @@ export default function CollabsList() {
               value={newUser.serviceId}
               onChange={e => setNewUser({ ...newUser, serviceId: e.target.value })}
             >
-              <option value="">-- Choisir un service --</option>
+              <option value="">Service</option>
               {servs.map(service => (
                 <option key={service.id} value={service.id}>
                   {service.name}
                 </option>
               ))}
             </select>
+            <input
+                required
+                autoComplete="tel"
+                className="input input-bordered flex-[5]"
+                type="tel"
+                placeholder="Téléphone pro"
+                value={newUser.phoneNumber}
+                onChange={e => setNewUser({ ...newUser, phoneNumber: e.target.value })}
+              />
             <button type="submit" className="btn btn-primary">
               <Plus className="w-4 h-4" />
             </button>
@@ -162,6 +171,7 @@ export default function CollabsList() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Email</th>
+              <th>Tél</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -226,6 +236,19 @@ export default function CollabsList() {
                     />
                   ) : (
                     user.email
+                  )}
+                </td>
+                <td>
+                  {editingUser?.id === user.id ? (
+                    <input
+                      className="input input-sm"
+                      value={editingUser.phoneNumber}
+                      onChange={e =>
+                        setEditingUser({ ...editingUser, phoneNumber: e.target.value })
+                      }
+                    />
+                  ) : (
+                    user.phoneNumber
                   )}
                 </td>
                 <td className="space-x-2">
