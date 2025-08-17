@@ -25,7 +25,7 @@ export default function ServicesSection() {
   if (isLoading) return <p>Chargement des services…</p>
   if (isError)   return <p className="text-red-500">Erreur : {error.message}</p>
 
-  // Si votre CRUD renvoie { rows, count } :
+  // Si le CRUD renvoie { rows, count } :
   const services = data.rows ?? data
 
   return (
@@ -37,8 +37,8 @@ export default function ServicesSection() {
           <div className="collapse collapse-arrow">
             <input type="checkbox" />
               <div className="collapse-title pt-4 pb-0 text-xl font-semibold">
-                <div className="flex flex-row gap-4">
-                  <div className="flex flex-col gap-2 items-center">
+                <div className="relative flex flex-row gap-4">
+                  <div className="absolute flex flex-col gap-2 items-center">
                     {
                       service.Users.map((user) => (
                         <div key={user.id} className="badge badge-xs badge-info">{user.firstName} {user.lastName}</div>

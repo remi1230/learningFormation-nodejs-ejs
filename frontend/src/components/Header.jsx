@@ -118,15 +118,18 @@ export default function Header() {
             </label>
 
             {user ? (
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={handleLogout}
-                disabled={loggingOut}
-                title="Se déconnecter"
-                aria-label="Se déconnecter"
-              >
-                <LogOut className="h-6 w-6" />
-              </button>
+              <div className="tooltip tooltip-left tooltip-accent" data-tip="Se déconnecter">
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  title="Se déconnecter"
+                  aria-label="Se déconnecter"
+                >
+                  <LogOut className="h-6 w-6" />
+                </button>
+              </div>
+              
             ) : null}
           </div>
         </div>

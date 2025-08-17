@@ -44,7 +44,7 @@ export default function ServicesSection() {
                 <div className="flex flex-row">
                   <div>{user.firstName} {user.lastName}</div>
                 </div>
-                <div className="flex flex-row gap-6">
+                <div className="flex flex-row gap-6 font-light">
                   <div className="flex flex-row gap-2 items-center"><Phone className="h-5 w-5 text-primary" /> {formatPhoneNumber(user.phoneNumber, '.')}</div>
                   <div className="flex flex-row gap-2 items-center"><Mail className="h-5 w-5 text-primary" /> {user.email}</div>
                 </div>

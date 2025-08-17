@@ -10,8 +10,8 @@ export default function MapCabinetSection() {
         lng={2.3988}
         title={
           <div className="flex flex-col items-center">
-            <div className="leading-[0.4]">
-              <p>Cabinet dentaire du docteur Dupont</p>
+            <div className="leading-[0.4] text-gray-800">
+              <p>Cabinet dentaire du docteur Dubois</p>
               <p>12, rue des Aubépines</p>
               <p>18000 Bourges</p>
             </div>

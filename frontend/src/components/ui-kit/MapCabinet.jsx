@@ -66,7 +66,7 @@ export default function MapCabinet({
   if (!isLoaded) return <div className="skeleton w-full h-[480px] rounded-xl" />;
 
   return (
-    <div className="overflow-hidden shadow-lg rounded-lg border border-accent">
+    <div className="overflow-hidden shadow-lg rounded-md border">
       <GoogleMap
         onLoad={onMapLoad}
         mapContainerStyle={CONTAINER_STYLE}

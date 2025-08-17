@@ -85,8 +85,63 @@
 
 
 body {
-  @apply font-inter;
+  @apply font-inter font-light;
 }
+
+
+/* Pour le thème light uniquement */
+:root[data-theme='light'], :root[data-theme='cupcake'], :root[data-theme='bumblebee'], :root[data-theme='emerald'], :root[data-theme='corporate'], 
+:root[data-theme='lofi'], :root[data-theme='pastel'], :root[data-theme='fantasy'], :root[data-theme='wireframe'], :root[data-theme='cmyk'], :root[data-theme='autumn'],
+:root[data-theme='acid'], :root[data-theme='lemonade'], :root[data-theme='winter'], :root[data-theme='nord'], :root[data-theme='silk'], :root[data-theme='caramellatte']
+{
+  --rbc-outtime-bg: #e7e7e7;
+  --rbc-outtime-fg: #525252;
+}
+/* Pour le thème dark uniquement */
+:root[data-theme='dark'], :root[data-theme='halloween'], :root[data-theme='forest'], :root[data-theme='black'], :root[data-theme='luxury'], :root[data-theme='dracula'], 
+:root[data-theme='business'], :root[data-theme='night'], :root[data-theme='coffee'], :root[data-theme='dim'], :root[data-theme='dark'], :root[data-theme='abyss'],
+:root[data-theme='sunset'], :root[data-theme='default']
+{
+  --rbc-outtime-bg: #352f2f;
+  --rbc-outtime-fg: #c4c4c4;
+}
+
+/* Thèmes spéciaux */
+:root[data-theme='synthwave']
+{
+  --rbc-outtime-bg: #0f0052;
+  --rbc-outtime-fg: #c4c4c4;
+}
+:root[data-theme='retro']
+{
+  --rbc-outtime-bg: #c0b599;
+  --rbc-outtime-fg: #7e5a5a;
+}
+:root[data-theme='cyberpunk']
+{
+  --rbc-outtime-bg: #e0d644;
+  --rbc-outtime-fg: #917878;
+}
+:root[data-theme='valentine']
+{
+  --rbc-outtime-bg: #d6c2cd;
+  --rbc-outtime-fg: #f1e6ee;
+}
+:root[data-theme='aqua']
+{
+  --rbc-outtime-bg: #0f1f50;
+  --rbc-outtime-fg: #c4c4c4;
+}
+:root[data-theme='garden']
+{
+  --rbc-outtime-bg: #e2e1e2;
+  --rbc-outtime-fg: #777777;
+}
+
+
+
+
+
 
 
 .ws-48 {
@@ -120,14 +175,16 @@ body {
 }
 
 .rbc-today {
-  background-color: var(--color-base-300) !important;
+  background-color: var(--color-base-100) !important;
   filter: hue-rotate(0.75turn) brightness(0.92) saturate(0.5);
 }
+
 .rbc-time-slot[style] {
-  background-color: var(--color-base-300) !important;
-  filter: hue-rotate(0.5turn) brightness(1.5) saturate(2);
-  color: var(--color-info) !important;
+  background-color: var(--rbc-outtime-bg) !important;
+  color: var(--rbc-outtime-fg) !important;
+  /*filter: hue-rotate(0.25turn) brightness(0.72) saturate(0.72);*/
 }
+
 .rbc-allday-cell{
   display: none;
 }

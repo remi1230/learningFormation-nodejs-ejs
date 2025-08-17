@@ -13,7 +13,7 @@ export default function Home() {
       <ServicesSection />
       <NewsSection />
       <CabinetMapsSection />
-      <SchedulesSection title="Horaires d'ouverture" size="4xl" marginBottom="8" />
+      <SchedulesSection title="Horaires d'ouverture" size="4xl" marginBottom="0" />
       <ContactSection />
     </div>
   );

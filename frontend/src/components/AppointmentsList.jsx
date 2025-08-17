@@ -1,4 +1,5 @@
 // src/pages/TakeAppointment.jsx
+import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import moment from 'moment/min/moment-with-locales'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -121,7 +122,7 @@ export default function TakeAppointment() {
     const current = hour + minute / 60
 
     if (current < start || current >= end) {
-      return { style: { backgroundColor: '#f0f0f0', pointerEvents: 'none' } }
+      return { style: { pointerEvents: 'none' } }
     }
     return {}
   }
@@ -199,10 +200,10 @@ export default function TakeAppointment() {
     setTimeout(() => toast.remove(), 3000)
   }
 
-  function StatusIcon({ status }) {
+  function StatusIcon({ status, mr = '1.5' }) {
     // Icônes statiques (pas d’animate-spin)
     if (status === 'pending') {
-      return <Clock3 className="mr-1.5 h-3.5 w-3.5 shrink-0" aria-label={STATUS_LABELS[status]} title={STATUS_LABELS[status]} />
+      return <Clock3 className={`mr-${mr} h-3.5 w-3.5 shrink-0`} aria-label={STATUS_LABELS[status]} title={STATUS_LABELS[status]} />
     }
     if (status === 'declined') {
       return <XCircle className="mr-1.5 h-3.5 w-3.5 shrink-0" aria-label={STATUS_LABELS[status]} title={STATUS_LABELS[status]} />
@@ -218,9 +219,21 @@ export default function TakeAppointment() {
       <div className="w-full h-full flex items-center justify-center text-white text-xs font-medium">
         <StatusIcon status={event.status} />
         <span className="truncate">{event.title ?? 'Réservé'}</span>
+        <div className="tooltip">
+          <div className="tooltip-content" data-tip={`${event.title}`}>
+            <span className="truncate">{event.title ?? 'Réservé'}</span>
+          </div>
+        </div>
       </div>
-    )
+    );
   }
+
+function EventWrapper({ children }) {
+  // Vérifie si children est un React Element avant de cloner
+  return React.isValidElement(children)
+    ? React.cloneElement(children, { title: '' })
+    : children;
+}
 
   async function updateStatus() {
     if (!selectedEvent) return
@@ -344,10 +357,11 @@ export default function TakeAppointment() {
             </div>
           </fieldset>
         </div>
-
+        
+        {/* Calendrier */}
         <div className="flex-[2/3] overflow-visible p-0 m-0">
           <Calendar
-            components={{ event: EventCell }}
+            components={{ event: EventCell, eventWrapper: EventWrapper }}
             localizer={localizer}
             events={events}
             min={min}
@@ -358,7 +372,6 @@ export default function TakeAppointment() {
             views={["week"]}
             step={30}
             timeslots={2}
-            selectable
             onSelectEvent={(event) => {
               setStatusChoice(event.status || 'pending')
               setSelectedEvent(event)
@@ -391,11 +404,14 @@ export default function TakeAppointment() {
             <div>
               <div className="flex justify-between font-bold text-lg mb-4">
                 <span className="text-2xl">Patient {capitalizeFirstLetter(selectedEvent.firstName)} {capitalizeFirstLetter(selectedEvent.lastName)}</span>
-                <span className="badge">Service {selectedEvent.service}</span>
+                <span className="badge"><span className="w-3 h-3 rounded-full inline-block border" style={{ backgroundColor: selectedEvent.color }}></span>Service {selectedEvent.service}</span>
               </div>
               <div className="flex justify-between font-bold text-lg mb-4">
                 <span className="text-xl">RDV du {moment(selectedEvent.start).format('dddd D MMMM YYYY à HH:mm')}</span>
-                <span className="badge">{STATUS_LABELS[selectedEvent.status] || '—'}</span>
+                <div className="badge gap-0">
+                  <div><StatusIcon status={selectedEvent.status} mr='1'/></div>
+                  <div>{STATUS_LABELS[selectedEvent.status] || '—'}</div>
+                </div>
               </div>
             </div>
 

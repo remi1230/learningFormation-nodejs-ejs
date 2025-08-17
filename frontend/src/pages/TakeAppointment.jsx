@@ -175,7 +175,7 @@ export default function TakeAppointment() {
               <h1 className="text-2xl">Service :</h1>
             </label>
             <select
-              className="select select-bordered select-lg"
+              className="select select-bordered select-md"
               value={selectedService}
               onChange={e => setSelectedService(e.target.value)}
             >
@@ -216,6 +216,9 @@ export default function TakeAppointment() {
               if (cur < startH || cur >= endH) return showToast('Hors horaires.')
               setSelectedSlot(slotInfo)
               setShowModal(true)
+            }}
+            onSelectEvent={(event) => {
+              return showToast('Créneau déjà pris.')
             }}
             eventPropGetter={eventStyleGetter}
             messages={{
