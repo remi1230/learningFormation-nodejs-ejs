@@ -7,6 +7,26 @@ const router = express.Router();
 // Middleware JWT
 const auth = require('../middleware/auth');
 router.get('/me', auth, async (req, res) => {
+  const userId = req.auth.userId;
+  if(userId === 9998 || userId === 9999) {
+    const userRole = userId === 9998 ? 'Patient' : 'Professional';
+    const dayDate  = new Date();
+
+    let user       = {};
+    user.id        = userId;
+    user.firstName = 'Pour';
+    user.lastName  = 'démonstration';
+    user.email     = 'pour.test@gmail.com';
+    user.role      = userRole;
+    user.password  = userRole;
+    user.obsolete  = 0;
+    user.createdAt = dayDate;
+    user.updatedAt = dayDate;
+    user.serviceId = userRole === 'Patient' ? undefined : 1;
+
+    return res.json(user);
+  }
+
   const { User } = require('../model');
   const user = await User.findByPk(req.auth.userId, {
     attributes: { exclude: ['password'] }

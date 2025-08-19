@@ -95,70 +95,78 @@ export default function CollabsList() {
           e.preventDefault();
           createMutation.mutate(newUser);
         }}
-        className="flex gap-4 flex-wrap items-end"
+        className="flex flex-row gap-4 items-start w-full max-w-4xl mx-auto px-4"
       >
+        <div className="grid grid-cols-2 gap-4">
+          <select
+            className="select select-bordered"
+            value={newUser.serviceId}
+            onChange={e => setNewUser({ ...newUser, serviceId: e.target.value })}
+          >
+            <option value="">Service</option>
+            {servs.map(service => (
+              <option key={service.id} value={service.id}>
+                {service.name}
+              </option>
+            ))}
+          </select>
 
-          <div className="flex flex-wrap gap-4 w-full">
-            <div className="flex flex-row gap-4 w-full">
-              <input
-                required
-                className="input input-bordered flex-[15]"
-                placeholder="Nom"
-                value={newUser.firstName}
-                onChange={e => setNewUser({ ...newUser, firstName: e.target.value })}
-              />
-              <input
-                required
-                className="input input-bordered flex-[9]"
-                placeholder="Prénom"
-                value={newUser.lastName}
-                onChange={e => setNewUser({ ...newUser, lastName: e.target.value })}
-              />
-              <input
-                required
-                autoComplete="email"
-                className="input input-bordered flex-[20]"
-                placeholder="Email"
-                value={newUser.email}
-                onChange={e => setNewUser({ ...newUser, email: e.target.value })}
-              />
-              <input
-                required
-                autoComplete="current-password"
-                className="input input-bordered flex-[5]"
-                type="password"
-                placeholder="Mot de passe"
-                value={newUser.password}
-                onChange={e => setNewUser({ ...newUser, password: e.target.value })}
-              />
-           </div>
-           <div className="flex flex-wrap gap-4 w-full">
-            <select
-              className="select select-bordered ws-48"
-              value={newUser.serviceId}
-              onChange={e => setNewUser({ ...newUser, serviceId: e.target.value })}
-            >
-              <option value="">Service</option>
-              {servs.map(service => (
-                <option key={service.id} value={service.id}>
-                  {service.name}
-                </option>
-              ))}
-            </select>
-            <input
-                required
-                autoComplete="tel"
-                className="input input-bordered flex-[5]"
-                type="tel"
-                placeholder="Téléphone pro"
-                value={newUser.phoneNumber}
-                onChange={e => setNewUser({ ...newUser, phoneNumber: e.target.value })}
-              />
-            <button type="submit" className="btn btn-primary">
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
+          <input
+            required
+            className="input input-bordered"
+            placeholder="Nom"
+            value={newUser.firstName}
+            onChange={e => setNewUser({ ...newUser, firstName: e.target.value })}
+          />
+
+          <input
+            required
+            className="input input-bordered"
+            placeholder="Prénom"
+            value={newUser.lastName}
+            onChange={e => setNewUser({ ...newUser, lastName: e.target.value })}
+          />
+
+          <input
+            required
+            autoComplete="off"
+            className="input input-bordered tel"
+            type="tel"
+            placeholder="Téléphone pro"
+            value={newUser.phoneNumber}
+            onChange={e => setNewUser({ ...newUser, phoneNumber: e.target.value })}
+          />
         </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            required
+            autoComplete="off"
+            className="input input-bordered w-full col-span-full"
+            placeholder="Email"
+            value={newUser.email}
+            onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+          />
+
+          <input
+            required
+            type="password"
+            autoComplete="off"
+            className="input input-bordered"
+            placeholder="•••"
+            value={newUser.password}
+            onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+          />
+
+          <button
+            type="submit"
+            className="btn btn-primary w-fit justify-self-start"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          
+        </div>    
+        
       </form>
 
       {/* 📋 Liste des utilisateurs */}
@@ -172,6 +180,7 @@ export default function CollabsList() {
               <th>Prénom</th>
               <th>Email</th>
               <th>Tél</th>
+              <th>En poste</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -251,7 +260,21 @@ export default function CollabsList() {
                     user.phoneNumber
                   )}
                 </td>
-                <td className="space-x-2">
+                <td className='text-center'>
+                  {editingUser?.id === user.id ? (
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={!editingUser.obsolete}
+                      onChange={e =>
+                        setEditingUser({ ...editingUser, obsolete: !e.target.checked })
+                      }
+                    />
+                  ) : (
+                    !user.obsolete ? '✅' : '❌'
+                  )}
+                </td>
+                <td className="space-y-2">
                   {editingUser?.id === user.id ? (
                     <>
                       <button
@@ -274,12 +297,6 @@ export default function CollabsList() {
                         onClick={() => setEditingUser(user)}
                       >
                         <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        className="btn btn-sm btn-error"
-                        onClick={() => setUserToDelete(user.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
                       </button>
                     </>
                   )}

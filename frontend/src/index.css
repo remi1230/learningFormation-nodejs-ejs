@@ -174,10 +174,7 @@ body {
   width: 100% !important;
 }
 
-.rbc-today {
-  background-color: var(--color-base-100) !important;
-  filter: hue-rotate(0.75turn) brightness(0.92) saturate(0.5);
-}
+
 
 .rbc-time-slot[style] {
   background-color: var(--rbc-outtime-bg) !important;

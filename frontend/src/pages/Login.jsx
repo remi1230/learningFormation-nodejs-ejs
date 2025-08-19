@@ -60,8 +60,8 @@ export default function Connexion() {
   };
 
   return (
-    <div className="mt-24 flex flex-col items-center">
-      <div className="text-center mb-10">
+    <div className="mt-24 mb-24 flex flex-col items-center">
+      <div className="text-center mb-">
         <button
           className="btn btn-outline btn-primary mb-10 btn-xl"
           onClick={handleGoogleLogin}
@@ -69,7 +69,7 @@ export default function Connexion() {
           Se connecter avec Google
         </button>
       </div>
-      <div className="card bg-base-200 w-80 h-80 shadow-lg flex flex-col">
+      <div className="card bg-base-200 w-80 h-80 mb-12 shadow-lg flex flex-col">
         <div className="card-body flex-1 flex flex-col justify-center">
           <h2 className="card-title mb-3 text-center mx-auto">Connexion</h2>
           <form onSubmit={handleSubmit} className="space-y-4 flex-1">
@@ -109,6 +109,12 @@ export default function Connexion() {
             </div>
           </form>
         </div>
+      </div>
+      <div className="prose prose-xl text-center">
+        <div className="font-bold">Démonstration</div>
+        <div className="">Se connecter avec Google</div>
+        <div className="prose-lg">OU</div>
+        <div className="prose-lg">Une adresse email valide commançant par "patient" et n'importe quel mot de passe</div>
       </div>
     </div>
   );

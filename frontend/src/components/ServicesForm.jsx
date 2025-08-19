@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
 import RichEditor from './ui-kit/RichEditor'
+import ntc from "../utils/ntc";
 
-const EMPTY = { id: null, name: '', description: '', detail: '', color: '#666666' }
+const EMPTY = { id: null, name: '', description: '', detail: '', color: '#666666', obsolete: false }
 
 export default function ServicesForm({ initial, onSave, onCancel, isSaving }) {
   const [form, setForm] = useState(() => initial ?? EMPTY)
+
+  const [hexColor, nameColor, exactColor] = ntc.name(form.color);
 
   useEffect(() => {
     setForm(initial ?? EMPTY)
@@ -16,8 +19,20 @@ export default function ServicesForm({ initial, onSave, onCancel, isSaving }) {
       className="flex flex-col gap-4"
       onSubmit={(e) => { e.preventDefault(); onSave(form) }}
     >
-      <div className="flex flex-row gap-4">
-        <div className="basis-4/12 form-control grow">
+      <div className="flex flex-row gap-4 items-center">
+        <div
+          className="tooltip tooltip-accent"
+          data-tip={form.obsolete ? 'Ce service est désactivé' : 'Ce service est actif'}
+        >
+          <input
+            type="checkbox"
+            className="checkbox rounded-4xl checkbox-accent"
+            checked={!form.obsolete}
+            onChange={(e) => setForm(f => ({ ...f, obsolete: !e.target.checked }))}
+          />
+        </div>
+
+        <div className="flex basis-4/12 form-control grow">
           <input
             placeholder="Désignation"
             className="input input-bordered w-full"
@@ -27,17 +42,17 @@ export default function ServicesForm({ initial, onSave, onCancel, isSaving }) {
           />
         </div>
 
-        <div className="basis-1/12 form-control grow">
+        <div className="form-control grow pt-1">
           <div
-            className="tooltip w-full"
-            data-tip={`Couleur du service : ${form.color || '#000000'}`}
+            className="tooltip tooltip-accent w-full"
+            data-tip={`Couleur du service : ${nameColor || '#000000'}`}
           >
             <input
               type="color"
               value={form.color || '#000000'}
               onChange={(e) => setForm(f => ({ ...f, color: e.target.value }))}
               required
-              className="w-full h-10 rounded-lg border border-base-300 cursor-pointer p-0"
+              className="w-10 h-10 rounded-4xl border border-base-300 cursor-pointer p-0"
               style={{
                 WebkitAppearance: 'none',
                 MozAppearance: 'none',

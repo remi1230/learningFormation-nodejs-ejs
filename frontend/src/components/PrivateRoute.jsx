@@ -1,14 +1,32 @@
 // src/components/PrivateRoute.jsx
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from 'react';
 
-export default function PrivateRoute({ children, requiredRole }) {
-  const { user, loading } = useAuth();
+export default function PrivateRoute({ children, requiredRoles = [] }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (loading) return <p>Chargement...</p>;
+  useEffect(() => {
+    fetch('/api/auth/me', {
+      credentials: 'include',
+    })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-  if (!user) return <Navigate to="/connexion" replace />;
-  if (requiredRole && user.role !== requiredRole) return <Navigate to="/" replace />;
+  if (loading) return null; // ou un spinner, ou <LoadingScreen />
+
+  if (!user) {
+    return <Navigate to="/connexion-pro" replace />;
+  }
+
+  if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 }

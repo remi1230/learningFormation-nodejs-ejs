@@ -35,6 +35,7 @@ const ServicesTable = memo(function ServicesTable({
             <th>Couleur</th>
             <th>Description</th>
             <th>Détails</th>
+            <th className='text-center'>Actif</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -46,17 +47,15 @@ const ServicesTable = memo(function ServicesTable({
               <td className="text-center align-middle">
                 <div
                   style={{ backgroundColor: s.color || '#000000' }}
-                  className="w-4 h-4 rounded-full inline-block"
+                  className="w-5 h-5 rounded-full inline-block"
                 />
               </td>
               <td>{s.description}</td>
               <td><HtmlPreview html={s.detail} /></td>
-              <td className="flex flex-col items-center gap-2 pt-4">
+              <td className="font-medium text-center">{!s.obsolete ? '✅' : '❌'}</td>
+              <td className="">
                 <button className="btn btn-sm btn-secondary" onClick={() => onEdit(s)}>
                   <Pencil className="w-4 h-4" />
-                </button>
-                <button className="btn btn-sm btn-error" onClick={() => onAskDelete(s.id)}>
-                  {deleting && isDeletingId === s.id ? '…' : <Trash2 className="w-4 h-4" />}
                 </button>
               </td>
             </tr>

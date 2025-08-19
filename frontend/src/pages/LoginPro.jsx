@@ -40,7 +40,7 @@ export default function Connexion() {
       //if (onLoginSuccess) onLoginSuccess(user);
 
       // 4️⃣ Redirection selon le rôle
-      if (user.role === 'Professional') {
+      if (user.role === 'Professional' || user.role === 'Administrator') {
         navigate('/backoffice');
       } else {
         navigate('/take-appointment');
@@ -60,7 +60,7 @@ export default function Connexion() {
   };
 
   return (
-    <div className="mt-24 flex flex-col items-center">
+    <div className="mt-24 flex flex-col gap-12 items-center">
       <div className="card bg-base-200 w-80 h-80 shadow-lg flex flex-col">
         <div className="card-body flex-1 flex flex-col justify-center">
           <h2 className="card-title mb-3 text-center mx-auto">Espace Professionnel</h2>
@@ -101,6 +101,10 @@ export default function Connexion() {
             </div>
           </form>
         </div>
+      </div>
+      <div className="prose prose-xl text-center">
+        <div className=" font-bold">Démonstration</div>
+        <div className="prose-lg">Une adresse email valide commançant par "professional" et n'importe quel mot de passe</div>
       </div>
     </div>
   );

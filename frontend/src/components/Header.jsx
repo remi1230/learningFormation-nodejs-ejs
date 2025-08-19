@@ -44,6 +44,12 @@ export default function Header() {
 
   const title = titles[location.pathname] || 'Page';
 
+  const userRoles = {
+    'Administrator': 'Administrateur',
+    'Patient'      : 'Patient',
+    'Professional' : 'Professionnel',
+  };
+
   return (
     <>
       <input type="checkbox" id="modal-horaires" className="modal-toggle" />
@@ -82,7 +88,7 @@ export default function Header() {
                 <span className="badge badge-xs badge-accent">
                   {user.firstName + " " + user.lastName}
                 </span>
-                <span className="badge badge-xs badge-primary">{user.role === 'Professional' ? 'Professionnel' : 'Patient'}</span>
+                <span className="badge badge-xs badge-primary">{userRoles[user.role]}</span>
               </div>
             ) : (
               <span className="badge badge-xs badge-info">Non connecté</span>
@@ -95,14 +101,14 @@ export default function Header() {
             <a className="btn btn-ghost btn-lg" href="/">Accueil</a>
 
             {user ? (
-              user.role === "Professional" ? null : (
+              user.role === "Professional" || user.role === "Administrator" ? null : (
                 <a className="btn btn-ghost btn-lg" href="/take-appointment">RDV</a>
               )
             ) : (
               <a className="btn btn-ghost btn-lg" href="/connexion">Espace client</a>
             )}
 
-            {user && user.role === "Professional" ? (
+            {user && (user.role === "Professional" || user.role === "Administrator") ? (
               <a className="btn btn-ghost btn-lg" href="/backoffice">Administration</a>
             ) : !user ? (
               <a className="btn btn-ghost btn-lg" href="/connexion-pro">Accès Professionnel</a>

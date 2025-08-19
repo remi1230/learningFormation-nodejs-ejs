@@ -18,22 +18,7 @@ export default function CollabsList() {
     },
   })
 
-  const {
-    data: dataServices,
-    isLoading: isLoadingServices,
-    isError: isErrorServices,
-    error: errorServices,
-  } = useQuery({
-    queryKey: ['services'],
-    queryFn: async () => {
-      const res = await fetch('/api/services-crud', { credentials: 'include' });
-      if (!res.ok) throw new Error(`Erreur ${res.status}`);
-      return res.json();
-    },
-  });
-
   const users = data?.rows ?? data ?? []
-  const servs = dataServices?.rows ?? dataServices ?? []
 
   const createMutation = useMutation({
     mutationFn: async user => {
@@ -98,44 +83,54 @@ export default function CollabsList() {
         className="flex gap-4 flex-wrap items-end"
       >
 
-          <div className="flex flex-wrap gap-4 w-full">
-            <div className="flex flex-row gap-4 w-full">
+          <div className="flex flex-row gap-4 w-full">
+            <div className="flex-[20] grid grid-cols-2 gap-4 w-full">
               <input
                 required
-                className="input input-bordered flex-[15]"
+                className="input input-bordered"
                 placeholder="Nom"
                 value={newUser.firstName}
                 onChange={e => setNewUser({ ...newUser, firstName: e.target.value })}
               />
               <input
                 required
-                className="input input-bordered flex-[9]"
+                className="input input-bordered"
                 placeholder="Prénom"
                 value={newUser.lastName}
                 onChange={e => setNewUser({ ...newUser, lastName: e.target.value })}
               />
               <input
                 required
-                autoComplete="email"
-                className="input input-bordered flex-[20]"
+                autoComplete="off"
+                className="input input-bordered col-span-full w-full"
                 placeholder="Email"
                 value={newUser.email}
                 onChange={e => setNewUser({ ...newUser, email: e.target.value })}
-              />
-              <input
+            />
+           </div>
+           <div className="flex-[10] grid grid-cols-2 gap-4 w-full">
+             <input
                 required
-                autoComplete="tel"
-                className="input input-bordered flex-[5]"
+                autoComplete="off"
+                className="input input-bordered tel"
                 type="tel"
                 placeholder="Téléphone"
                 value={newUser.phoneNumber}
                 onChange={e => setNewUser({ ...newUser, phoneNumber: e.target.value })}
               />
-           </div>
-           <div className="flex flex-wrap gap-4 w-full">
-            <button type="submit" className="btn btn-primary">
-              <Plus className="w-4 h-4" />
-            </button>
+              <div></div>
+              <input
+                required
+                autoComplete="off"
+                className="input input-bordered"
+                type="password"
+                placeholder="Mot de passe"
+                value={newUser.password}
+                onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+              />
+              <button type="submit" className="btn btn-primary w-fit justify-self-start">
+                  <Plus className="w-4 h-4" />
+              </button>
           </div>
         </div>
       </form>
@@ -209,7 +204,7 @@ export default function CollabsList() {
                     user.phoneNumber
                   )}
                 </td>
-                <td className="space-x-2">
+                <td className="space-y-2">
                   {editingUser?.id === user.id ? (
                     <>
                       <button
@@ -232,12 +227,6 @@ export default function CollabsList() {
                         onClick={() => setEditingUser(user)}
                       >
                         <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        className="btn btn-sm btn-error"
-                        onClick={() => setUserToDelete(user.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
                       </button>
                     </>
                   )}

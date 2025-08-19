@@ -28,11 +28,10 @@ export default function App() {
           <Route path="connexion" element={<Login onLoginSuccess={(user) => setUser(user)} />} />
           <Route path="connexion-pro" element={<LoginPro onLoginSuccess={(user) => setUser(user)} />} />
           <Route path="take-appointment" element={<TakeAppointment />} />
-          <Route path="backoffice" element={<BackOffice />} />
 
           {/* catch-all : renvoie à la home si URL inconnue */}
           <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="backoffice" element={<PrivateRoute requiredRole="Professional"><BackOffice /></PrivateRoute>} />
+          <Route path="backoffice" element={<PrivateRoute requiredRoles={['Professional', 'Administrator']}><BackOffice /></PrivateRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -16,6 +16,9 @@ router.get('/services-crud/with-collabs', async (req, res) => {
       include: {
         model: User,
         attributes: ['id', 'firstName', 'lastName', 'phoneNumber', 'email'],
+        where: {
+          obsolete: 0
+        }
       },
       order: [['id', 'ASC']],
     });
