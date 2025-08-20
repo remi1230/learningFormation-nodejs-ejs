@@ -25,4 +25,4 @@ COPY --from=frontend-builder /app/frontend/dist ./public
 
 EXPOSE 3000
 
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
