@@ -77,41 +77,43 @@ export default function Header() {
         <div className="navbar px-4 relative"> {/* relative pour l'absolu du centre */}
           {/* START */}
           <div className="navbar-start flex items-center gap-2">
-            <a className="text-xl font-bold btn btn-ghost btn-sm p-1 mr-1 whitespace-nowrap" href="/">
-              Clinique dentaire - {title}
+            <a className="text-md lg:text-lg xl:text-xl font-bold btn btn-ghost btn-sm p-1 mr-1 whitespace-nowrap" href="/">
+              <div className="flex flex-col xl:flex-row gap-1">
+                <div>Clinique dentaire</div><div className="hidden xl:block">-</div><div>{title}</div> 
+              </div>
             </a>
             
             {loading ? (
               <span className="text-sm text-gray-400">Chargement...</span>
             ) : user ? (
-              <div className="flex flex-row gap-2">
-                <span className="badge badge-xs badge-accent">
+              <div className="flex flex-col 2xl:flex-row gap-2">
+                <span className="badge badge-xs badge-accent flex-none whitespace-nowrap">
                   {user.firstName + " " + user.lastName}
                 </span>
-                <span className="badge badge-xs badge-primary">{userRoles[user.role]}</span>
+                <span className="badge badge-xs badge-primary flex-none whitespace-nowrap">{userRoles[user.role]}</span>
               </div>
             ) : (
-              <span className="badge badge-xs badge-info">Non connecté</span>
+              <span className="badge badge-xs badge-info flex-none whitespace-nowrap">Non connecté</span>
             )}
           </div>
 
           {/* CENTER — centré optiquement, quelle que soit la largeur start/end */}
           <div className="navbar-center absolute left-1/2 -translate-x-1/2
                           lg:static lg:translate-x-0">
-            <a className="btn btn-ghost btn-lg" href="/">Accueil</a>
+            <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/">Accueil</a>
 
             {user ? (
               user.role === "Professional" || user.role === "Administrator" ? null : (
-                <a className="btn btn-ghost btn-lg" href="/take-appointment">RDV</a>
+                <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/take-appointment">RDV</a>
               )
             ) : (
-              <a className="btn btn-ghost btn-lg" href="/connexion">Espace client</a>
+              <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/connexion">Espace client</a>
             )}
 
             {user && (user.role === "Professional" || user.role === "Administrator") ? (
-              <a className="btn btn-ghost btn-lg" href="/backoffice">Administration</a>
+              <a className="text-base lg:text-xl btn btn-ghost btn-lg" href="/backoffice">Administration</a>
             ) : !user ? (
-              <a className="btn btn-ghost btn-lg" href="/connexion-pro">Accès Professionnel</a>
+              <a className="text-base lg:text-xl btn btn-ghost btn-lg" href="/connexion-pro">Accès Professionnel</a>
             ) : null}
           </div>
 

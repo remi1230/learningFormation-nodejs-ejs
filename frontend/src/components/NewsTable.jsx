@@ -21,7 +21,7 @@ const HtmlPreview = memo(function HtmlPreview({ html }) {
 
 const NewsTable = memo(function NewsTable({ news, onEdit, onAskDelete, deleting, isDeletingId }) {
   return (
-    <div className="overflow-y-scroll h-80 [scrollbar-gutter:stable]">
+    <div className="overflow-y-scroll h-74 [scrollbar-gutter:stable]">
       <table className="table table-zebra table-sm table-fixed w-full">
         <colgroup>
           <col style={{ width: '70px' }} />

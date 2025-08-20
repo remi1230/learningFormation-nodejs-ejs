@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Pencil, Plus, Trash2 } from "lucide-react"
+import { Pencil, Plus, Check, X } from "lucide-react"
 
 export default function CollabsList() {
   const queryClient = useQueryClient()
@@ -49,21 +49,6 @@ export default function CollabsList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
       setNewUser({ email: '', role: 'Professional', password: '', firstName: '', lastName: '' })
-    },
-  })
-
-  const deleteMutation = useMutation({
-    mutationFn: async id => {
-      const res = await fetch(`/api/users-crud/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      return id
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      setUserToDelete(null)
     },
   })
 
@@ -271,7 +256,7 @@ export default function CollabsList() {
                       }
                     />
                   ) : (
-                    !user.obsolete ? '✅' : '❌'
+                    !user.obsolete ? <Check className="text-success w-5 h-5 ml-4" /> : <X className="text-error w-5 h-5 ml-4" />
                   )}
                 </td>
                 <td className="space-y-2">
@@ -306,27 +291,6 @@ export default function CollabsList() {
           </tbody>
         </table>
       </div>
-
-      {/* 🧾 Modal DaisyUI */}
-      {userToDelete && (
-        <dialog className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Supprimer cet utilisateur ?</h3>
-            <p className="py-4">Cette action est irréversible.</p>
-            <div className="modal-action">
-              <form method="dialog" className="flex gap-2">
-                <button className="btn" onClick={() => setUserToDelete(null)}>Annuler</button>
-                <button
-                  className="btn btn-error"
-                  onClick={() => deleteMutation.mutate(userToDelete)}
-                >
-                  Supprimer
-                </button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-      )}
     </div>
   )
 }

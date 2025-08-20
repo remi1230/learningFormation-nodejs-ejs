@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Check, X } from "lucide-react"
 import RichTextView from './ui-kit/RichTextView'
 
 const HtmlPreview = memo(function HtmlPreview({ html }) {
@@ -18,7 +18,7 @@ const ServicesTable = memo(function ServicesTable({
   isDeletingId,
 }) {
   return (
-    <div className="overflow-y-scroll h-80 [scrollbar-gutter:stable]">
+    <div className="overflow-y-scroll h-72 [scrollbar-gutter:stable]">
       <table className="table table-zebra table-sm table-fixed w-full">
         <colgroup>
           <col style={{ width: '70px' }} />
@@ -36,7 +36,7 @@ const ServicesTable = memo(function ServicesTable({
             <th>Description</th>
             <th>Détails</th>
             <th className='text-center'>Actif</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +52,9 @@ const ServicesTable = memo(function ServicesTable({
               </td>
               <td>{s.description}</td>
               <td><HtmlPreview html={s.detail} /></td>
-              <td className="font-medium text-center">{!s.obsolete ? '✅' : '❌'}</td>
+              <td className="font-medium text-center">
+                {!s.obsolete ? <Check className="text-success w-5 h-5 ml-10" /> : <X className="text-error w-5 h-5 ml-10" />}
+              </td>
               <td className="">
                 <button className="btn btn-sm btn-secondary" onClick={() => onEdit(s)}>
                   <Pencil className="w-4 h-4" />

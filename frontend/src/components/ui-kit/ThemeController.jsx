@@ -77,8 +77,8 @@ export default function ThemeController() {
 
   return (
     <div className="dropdown dropdown-end">
-      <button tabIndex={0} className="btn btn-ghost flex items-center gap-1">
-        Thème: <span className="capitalize">{theme}</span>
+      <button tabIndex={0} className="btn btn-ghost flex lg:flex-row flex-col lg:text-sm text-xs items-center gap-1">
+        <span>Thème: </span><span className="capitalize">{theme}</span>
         <ChevronDown size={16} />
       </button>
 
