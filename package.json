@@ -1,5 +1,5 @@
 {
-  "name": "learningFormation-Node-React",
+  "name": "nodeReact",
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm --prefix backend start\" \"npm --prefix frontend run dev\"",

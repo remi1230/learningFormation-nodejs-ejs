@@ -4,6 +4,7 @@
   "description": "Deuxième projet de formation Node avec EJS",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jest"
   },
   "repository": {
