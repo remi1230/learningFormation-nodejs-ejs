@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState } from 'react'
 import NewsForm from './NewsForm'
 import NewsTable from './NewsTable'
 import NewsDeleteConfirm from './NewsDeleteConfirm'
-import "cally"
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 async function fetchNews() {

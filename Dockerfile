@@ -3,7 +3,8 @@ FROM node:20.19.1-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 
-COPY frontend/package*.json ./
+# Copie explicite de package.json et package-lock.json
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
 
 COPY frontend ./
@@ -14,7 +15,7 @@ FROM node:20.19.1-alpine AS backend
 
 WORKDIR /app
 
-COPY backend/package*.json ./
+COPY backend/package.json backend/package-lock.json ./
 RUN npm install --omit=dev
 
 COPY backend ./
@@ -22,7 +23,6 @@ COPY backend ./
 # Copier les fichiers build du frontend vers le dossier public du backend
 COPY --from=frontend-builder /app/frontend/dist ./public
 
-# (si ton backend sert les fichiers statiques depuis ./public)
 EXPOSE 3000
 
 CMD ["node", "index.js"]
