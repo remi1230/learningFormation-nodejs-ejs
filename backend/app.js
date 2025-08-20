@@ -1,6 +1,7 @@
 // app.js
 require('dotenv').config();
 
+const basePath = process.env.BASE_PATH || '/';
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -53,8 +54,8 @@ app.use(passport.session());
 const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-app.use('/public',  express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(UPLOAD_DIR));
+app.use(basePath + 'public',  express.static(path.join(__dirname, 'public')));
+app.use(basePath + 'uploads', express.static(UPLOAD_DIR));
 
 app.use((req, res, next) => {
   res.locals.protUrl = process.env.NODE_ENV === 'production' ? 'https' : 'http';
@@ -67,16 +68,15 @@ app.use((req, res, next) => {
 // 2) ROUTES API
 // =====================================================
 
-app.use('/api/auth', authRoutes);
+app.use(basePath + 'api/auth', authRoutes);
+app.use(basePath + 'api', mainRoutes);
+app.use(basePath + 'api', userRoutes);
+app.use(basePath + 'api', serviceRoutes);
+app.use(basePath + 'api', schedulesRoutes);
+app.use(basePath + 'api', newsRoutes);
+app.use(basePath + 'api', appointmentRoutes);
+app.use(basePath + 'api/upload-image', makeUploadRoute(UPLOAD_DIR));
 
-app.use('/api', mainRoutes);
-app.use('/api', userRoutes);
-app.use('/api', serviceRoutes);
-app.use('/api', schedulesRoutes);
-app.use('/api', newsRoutes);
-app.use('/api', appointmentRoutes);
-
-app.use('/api/upload-image', makeUploadRoute(UPLOAD_DIR));
 
 // =====================================================
 // 3) FALLBACK POUR REACT (SPA)
@@ -84,9 +84,9 @@ app.use('/api/upload-image', makeUploadRoute(UPLOAD_DIR));
 
 app.get('*', (req, res, next) => {
   if (
-    req.path.startsWith('/api') ||
-    req.path.startsWith('/uploads') ||
-    req.path.startsWith('/public')
+    req.path.startsWith(basePath + 'api') ||
+    req.path.startsWith(basePath + 'uploads') ||
+    req.path.startsWith(basePath + 'public')
   ) {
     return next();
   }
