@@ -11,6 +11,7 @@ RUN npm ci
 
 # Copie du code et build
 COPY frontend ./
+ENV BASE_PATH=/nodejsmysql/
 RUN npm run build
 
 

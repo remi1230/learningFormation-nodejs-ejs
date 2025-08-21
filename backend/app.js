@@ -1,7 +1,6 @@
 // app.js
 require('dotenv').config();
 
-const basePath = process.env.BASE_PATH || '/';
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -24,12 +23,16 @@ const makeUploadRoute   = require('./routes/uploadRoute');
 
 const app = express();
 
-// =====================================================
+// ===============================
 // 1) CONFIG GLOBALE
-// =====================================================
+// ===============================
+const allowedOrigin =
+  process.env.NODE_ENV === 'production'
+    ? 'https://my1prod.com'
+    : 'http://localhost:5173';
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigin,
   credentials: true,
 }));
 
@@ -51,12 +54,19 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// ===============================
+// 2) STATIQUES
+// ===============================
 const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'uploads');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-app.use(basePath + 'public',  express.static(path.join(__dirname, 'public')));
-app.use(basePath + 'uploads', express.static(UPLOAD_DIR));
+// ⚠️ IMPORTANT : servir /app/public à la RACINE
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Uploads accessibles sous /uploads
+app.use('/uploads', express.static(UPLOAD_DIR));
+
+// Variables pour EJS éventuelles
 app.use((req, res, next) => {
   res.locals.protUrl = process.env.NODE_ENV === 'production' ? 'https' : 'http';
   res.locals.hostUrl = process.env.NODE_ENV === 'production' ? 'my1prod.com' : 'localhost:3000';
@@ -64,47 +74,24 @@ app.use((req, res, next) => {
   next();
 });
 
-// =====================================================
-// 2) ROUTES API
-// =====================================================
+// ===============================
+// 3) ROUTES API (à la racine)
+// ===============================
+app.use('/api/auth', authRoutes);
+app.use('/api', mainRoutes);
+app.use('/api', userRoutes);
+app.use('/api', serviceRoutes);
+app.use('/api', schedulesRoutes);
+app.use('/api', newsRoutes);
+app.use('/api', appointmentRoutes);
+app.use('/api/upload-image', makeUploadRoute(UPLOAD_DIR));
 
-app.use(basePath + 'api/auth', authRoutes);
-app.use(basePath + 'api', mainRoutes);
-app.use(basePath + 'api', userRoutes);
-app.use(basePath + 'api', serviceRoutes);
-app.use(basePath + 'api', schedulesRoutes);
-app.use(basePath + 'api', newsRoutes);
-app.use(basePath + 'api', appointmentRoutes);
-app.use(basePath + 'api/upload-image', makeUploadRoute(UPLOAD_DIR));
-
-
-// =====================================================
-// 3) FALLBACK POUR REACT (SPA)
-// =====================================================
-
+// ===============================
+// 4) FALLBACK SPA
+// ===============================
 app.get('*', (req, res, next) => {
-  if (
-    req.path.startsWith(basePath + 'api') ||
-    req.path.startsWith(basePath + 'uploads') ||
-    req.path.startsWith(basePath + 'public')
-  ) {
-    return next();
-  }
-
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-// =====================================================
-// 4) LANCEMENT
-// =====================================================
-
-/*const port = process.env.PORT || 3000;
-
-sequelize.sync({ force: false }).then(() => {
-  app.listen(port, () => {
-    console.log(`API sur http://localhost:${port}`);
-    console.log('DB synchronisée.');
-  });
-});*/
 
 module.exports = app;

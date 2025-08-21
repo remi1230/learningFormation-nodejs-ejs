@@ -7,6 +7,7 @@ export default defineConfig({
       jsxRuntime: 'automatic', // ✅ Nouveau JSX transform
     }),
   ],
+  base: process.env.BASE_PATH ?? '/',
   server: {
     proxy: {
       '/api': {
