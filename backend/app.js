@@ -98,13 +98,13 @@ app.get('*', (req, res, next) => {
 // 4) LANCEMENT
 // =====================================================
 
-const port = process.env.PORT || 3000;
+/*const port = process.env.PORT || 3000;
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(port, () => {
     console.log(`API sur http://localhost:${port}`);
     console.log('DB synchronisée.');
   });
-});
+});*/
 
 module.exports = app;
