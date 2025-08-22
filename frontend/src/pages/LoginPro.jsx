@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function Connexion() {
   const navigate = useNavigate();
   const [email, setEmail]       = useState('');
@@ -17,7 +19,7 @@ export default function Connexion() {
 
     try {
       // 1️⃣ Connexion (login)
-      const res = await fetch('/api/login', {
+      const res = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

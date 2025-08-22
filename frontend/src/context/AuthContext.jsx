@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -7,7 +9,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/auth/me", {
+    fetch(`${API_BASE}/auth/me`, {
       credentials: "include",
     })
       .then(res => res.ok ? res.json() : null)

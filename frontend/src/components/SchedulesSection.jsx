@@ -1,6 +1,8 @@
 // src/components/SchedulesSection.jsx
 import { useQuery } from '@tanstack/react-query'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function SchedulesSection({ title = "Horaires d'ouverture", size = "2xl", marginBottom = "8" }) {
   const {
     data,
@@ -10,7 +12,7 @@ export default function SchedulesSection({ title = "Horaires d'ouverture", size 
   } = useQuery({
     queryKey: ['schedules'],
     queryFn: async () => {
-      const res = await fetch('/api/schedules-crud', {
+      const res = await fetch(`${API_BASE}/schedules-crud`, {
         credentials: 'include',
       })
       if (!res.ok) {

@@ -7,6 +7,8 @@ import { diffYMD } from '../utils/dateFormat'
 import { capitalizeFirstLetter } from '../utils/stringFormat'
 import { Clock3, XCircle, ThumbsUp } from 'lucide-react'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 moment.locale('fr')
 const localizer = momentLocalizer(moment)
 
@@ -57,7 +59,7 @@ export default function TakeAppointment() {
 
   // --- Charger services
   useEffect(() => {
-    fetch('/api/services-crud', { credentials: 'include' })
+    fetch(`${API_BASE}/services-crud`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => setServices(data))
       .catch(err => console.error('Erreur services:', err))
@@ -65,7 +67,7 @@ export default function TakeAppointment() {
 
   // --- Charger horaires (plage et jours visibles)
   useEffect(() => {
-    fetch('/api/schedules-crud', { credentials: 'include' })
+    fetch(`${API_BASE}/schedules-crud`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => setScheduleList(data))
       .catch(console.error)
@@ -133,8 +135,8 @@ export default function TakeAppointment() {
     if (!services.length) return
 
     const url = selectedService
-      ? `/api/appointments-by-service?serviceId=${selectedService}`
-      : `/api/appointments-by-service`
+      ? `${API_BASE}/appointments-by-service?serviceId=${selectedService}`
+      : `${API_BASE}/appointments-by-service`
 
     fetch(url, { credentials: 'include' })
       .then(res => res.json())
@@ -238,7 +240,7 @@ function EventWrapper({ children }) {
   async function updateStatus() {
     if (!selectedEvent) return
     try {
-      const res = await fetch(`/api/appointments-crud/${selectedEvent.id}`, {
+      const res = await fetch(`${API_BASE}/appointments-crud/${selectedEvent.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: statusChoice }),

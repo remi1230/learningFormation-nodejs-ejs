@@ -8,6 +8,9 @@ import { useLocation } from 'react-router-dom';
 import { Clock } from "lucide-react";
 import { LogOut } from "lucide-react";
 
+
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function Header() {
   const location = useLocation();
   const { user, setUser, loading } = useAuth();
@@ -17,7 +20,7 @@ export default function Header() {
     if (loggingOut) return;
     setLoggingOut(true);
     try {
-      const res = await fetch("/api/auth/logout", {
+      const res = await fetch(`${API_BASE}/auth/logout`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

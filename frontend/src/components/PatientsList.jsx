@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Pencil, Plus, Trash2 } from "lucide-react"
+import { Pencil, Plus } from "lucide-react"
+
+const API_BASE = `${import.meta.env.BASE_URL}api`;
 
 export default function CollabsList() {
   const queryClient = useQueryClient()
@@ -12,7 +14,7 @@ export default function CollabsList() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['users', 'Patients'],
     queryFn: async () => {
-      const res = await fetch('/api/users-crud/by-role/Patient', { credentials: 'include' })
+      const res = await fetch(`${API_BASE}/users-crud/by-role/Patient`, { credentials: 'include' })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       return res.json()
     },
@@ -22,7 +24,7 @@ export default function CollabsList() {
 
   const createMutation = useMutation({
     mutationFn: async user => {
-      const res = await fetch('/api/users-crud', {
+      const res = await fetch(`${API_BASE}/users-crud`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -39,7 +41,7 @@ export default function CollabsList() {
 
   const deleteMutation = useMutation({
     mutationFn: async id => {
-      const res = await fetch(`/api/users-crud/${id}`, {
+      const res = await fetch(`${API_BASE}/users-crud/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       })
@@ -54,7 +56,7 @@ export default function CollabsList() {
 
   const updateMutation = useMutation({
     mutationFn: async user => {
-      const res = await fetch(`/api/users-crud/${user.id}`, {
+      const res = await fetch(`${API_BASE}/users-crud/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

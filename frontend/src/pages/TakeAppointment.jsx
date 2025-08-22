@@ -4,6 +4,8 @@ import moment from 'moment/min/moment-with-locales'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 moment.locale('fr')
 const localizer = momentLocalizer(moment)
 
@@ -27,7 +29,7 @@ export default function TakeAppointment() {
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-    fetch('/api/services-crud', { credentials: 'include' })
+    fetch(`${API_BASE}/services-crud`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         setServices(data);
@@ -38,7 +40,7 @@ export default function TakeAppointment() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/schedules-crud', { credentials: 'include' })
+    fetch(`${API_BASE}/schedules-crud`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => setScheduleList(data))
       .catch(console.error)
@@ -101,7 +103,7 @@ export default function TakeAppointment() {
   useEffect(() => {
     if (!selectedService) return setEvents([])
 
-    fetch(`/api/appointments-by-service?serviceId=${selectedService}`, { credentials: 'include' })
+    fetch(`${API_BASE}/appointments-by-service?serviceId=${selectedService}`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         const formatted = data.map(rdv => {
@@ -143,7 +145,7 @@ export default function TakeAppointment() {
     const date = moment(selectedSlot.start).format('YYYY-MM-DD')
     const time = moment(selectedSlot.start).format('HH:mm')
 
-    const res = await fetch('/api/appointments-crud', {
+    const res = await fetch(`${API_BASE}/appointments-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ serviceId: selectedService, status: 'pending', date, time })

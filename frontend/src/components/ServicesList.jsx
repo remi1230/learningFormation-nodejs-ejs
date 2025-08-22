@@ -4,8 +4,10 @@ import ServicesForm from './ServicesForm'
 import ServicesTable from './ServicesTable'
 import ConfirmDeleteModal from './ServicesDeleteConfirm'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 async function fetchServices() {
-  const res = await fetch('/api/services-crud', { credentials: 'include' })
+  const res = await fetch(`${API_BASE}/services-crud`, { credentials: 'include' })
   if (!res.ok) throw new Error(`Erreur ${res.status}`)
   return res.json()
 }
@@ -31,7 +33,7 @@ export default function ServicesList() {
 
   const saveMutation = useMutation({
     mutationFn: async (service) => {
-      const url = service.id ? `/api/services-crud/${service.id}` : '/api/services-crud'
+      const url = service.id ? `${API_BASE}/services-crud/${service.id}` : `${API_BASE}/services-crud`
       const method = service.id ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,
@@ -50,7 +52,7 @@ export default function ServicesList() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await fetch(`/api/services-crud/${id}`, {
+      const res = await fetch(`${API_BASE}/services-crud/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       })

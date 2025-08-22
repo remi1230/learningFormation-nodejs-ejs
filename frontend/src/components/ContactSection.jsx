@@ -2,6 +2,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { Phone, Mail } from "lucide-react";
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function ServicesSection() {
   const {
     data,
@@ -11,7 +13,7 @@ export default function ServicesSection() {
   } = useQuery({
     queryKey: ['services'],
     queryFn: async () => {
-      const res = await fetch('/api/services-crud/with-collabs', {
+      const res = await fetch(`${API_BASE}/services-crud/with-collabs`, {
         credentials: 'include',
       })
       if (!res.ok) {

@@ -6,8 +6,10 @@ import NewsTable from './NewsTable'
 import NewsDeleteConfirm from './NewsDeleteConfirm'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 async function fetchNews() {
-  const res = await fetch('/api/news-crud', { credentials: 'include' })
+  const res = await fetch(`${API_BASE}/news-crud`, { credentials: 'include' })
   if (!res.ok) throw new Error(`Erreur ${res.status}`)
   return res.json()
 }
@@ -32,7 +34,7 @@ export default function NewsList() {
 
   const saveMutation = useMutation({
     mutationFn: async (theNew) => {
-      const url = theNew.id ? `/api/news-crud/${theNew.id}` : '/api/news-crud'
+      const url = theNew.id ? `${API_BASE}/news-crud/${theNew.id}` : '${API_BASE}/news-crud'
       const method = theNew.id ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,
@@ -51,7 +53,7 @@ export default function NewsList() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await fetch(`/api/news-crud/${id}`, {
+      const res = await fetch(`${API_BASE}/news-crud/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       })

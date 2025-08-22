@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import RichTextView from './ui-kit/RichTextView';
 import { formatFRLong } from "../utils/dateFormat";
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function NewsSection() {
   const {
     data,
@@ -12,7 +14,7 @@ export default function NewsSection() {
   } = useQuery({
     queryKey: ['news'],
     queryFn: async () => {
-      const res = await fetch('/api/news-crud', {
+      const res = await fetch(`${API_BASE}/news-crud`, {
         credentials: 'include',
       })
       if (!res.ok) {

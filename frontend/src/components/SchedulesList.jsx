@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Pencil, Plus, Trash2 } from "lucide-react";
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function SchedulesList() {
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
@@ -12,7 +14,7 @@ export default function SchedulesList() {
     order: null,
   });
 
-  const [scheduleToDelete, setScheduleToDelete] = useState(null); // 🔴 Pour stocker le créneau à supprimer
+  const [scheduleToDelete, setScheduleToDelete] = useState(null); // Pour stocker le créneau à supprimer
 
   const daysOfWeek = [
     { label: 'Lundi', value: 'Lundi', order: 1 },
@@ -26,7 +28,7 @@ export default function SchedulesList() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['schedules'],
     queryFn: async () => {
-      const res = await fetch('/api/schedules-crud', { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/schedules-crud`, { credentials: 'include' });
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       return res.json();
     },
@@ -36,8 +38,8 @@ export default function SchedulesList() {
     mutationFn: async (formData) => {
       const method = formData.id ? 'PUT' : 'POST';
       const url = formData.id
-        ? `/api/schedules-crud/${formData.id}`
-        : '/api/schedules-crud';
+        ? `${API_BASE}/schedules-crud/${formData.id}`
+        : `${API_BASE}/schedules-crud`;
       const res = await fetch(url, {
         method,
         credentials: 'include',
@@ -55,7 +57,7 @@ export default function SchedulesList() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await fetch(`/api/schedules-crud/${id}`, {
+      const res = await fetch(`${API_BASE}/schedules-crud/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
