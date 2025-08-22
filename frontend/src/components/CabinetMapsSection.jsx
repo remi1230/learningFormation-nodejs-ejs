@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import MapCabinet from "./ui-kit/MapCabinet";
 
 export default function MapCabinetSection() {
@@ -20,14 +21,14 @@ export default function MapCabinetSection() {
           </div>
         }
       />
-      <a
+      <Link
         className="link text-lg mt-12"
-        href="https://maps.google.com/?q=Cabinet+dentaire+XYZ"
+        to="https://maps.google.com/?q=Cabinet+dentaire+XYZ"
         target="_blank"
         rel="noopener noreferrer"
       >
         Ouvrir dans Google Maps
-      </a>
+      </Link>
     </section>
   );
 }

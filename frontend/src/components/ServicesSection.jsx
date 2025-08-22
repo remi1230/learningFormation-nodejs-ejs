@@ -2,60 +2,69 @@
 import { useQuery } from '@tanstack/react-query'
 import RichTextView from './ui-kit/RichTextView';
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 export default function ServicesSection() {
   const {
-    data,
+    data: services = [],
     isLoading,
     isError,
     error,
   } = useQuery({
     queryKey: ['services'],
     queryFn: async () => {
-      const res = await fetch('/api/services-crud/with-collabs', {
+      const res = await fetch(`${API_BASE}/services-crud/with-collabs`, {
         credentials: 'include',
-      })
+      });
       if (!res.ok) {
-        throw new Error(`Erreur ${res.status}`)
+        throw new Error(`Erreur ${res.status}`);
       }
-      return res.json()
+      return res.json();
     },
     retry: false,
-  })
+    // Toujours renvoyer un tableau à l'affichage
+    initialData: [],
+    select: (raw) =>
+      Array.isArray(raw?.rows) ? raw.rows :
+      Array.isArray(raw)       ? raw      :
+      [],
+  });
 
-  if (isLoading) return <p>Chargement des services…</p>
-  if (isError)   return <p className="text-red-500">Erreur : {error.message}</p>
+  if (isLoading) return <p>Chargement des services…</p>;
+  if (isError)   return <p className="text-red-500">Erreur : {error?.message ?? 'Inconnue'}</p>;
 
-  // Si le CRUD renvoie { rows, count } :
-  const services = data.rows ?? data
+  if (services.length === 0) {
+    return <div className="text-sm text-gray-500">Aucun service pour le moment.</div>;
+  }
 
   return (
     <section className="flex flex-col">
       <h2 className="text-4xl font-bold text-primary mb-8 mt-0">Services proposés</h2>
       <div className="flex flex-col gap-12 items-center">
-      {services.map((service) => (
-        <div key={service.id} className="card w-full border shadow-sm">
-          <div className="collapse collapse-arrow">
-            <input type="checkbox" />
+        {services.map((service) => (
+          <div key={service.id ?? service.name} className="card w-full border shadow-sm">
+            <div className="collapse collapse-arrow">
+              <input type="checkbox" />
               <div className="collapse-title pt-4 pb-0 text-xl font-semibold">
                 <div className="relative flex flex-row gap-4">
                   <div className="absolute flex flex-col gap-2 items-center">
-                    {
-                      service.Users.map((user) => (
-                        <div key={user.id} className="badge badge-xs badge-info">{user.firstName} {user.lastName}</div>
-                      ))
-                    }
+                    {(service.Users ?? []).map((user) => (
+                      <div key={user.id} className="badge badge-xs badge-info">
+                        {user.firstName} {user.lastName}
+                      </div>
+                    ))}
                   </div>
                   <div className="text-2xl flex-1 text-center">{service.name}</div>
                 </div>
-                  <p className="text-lg">{service.description}</p>
+                <p className="text-lg">{service.description ?? ''}</p>
               </div>
               <div className="collapse-content text-base leading-relaxed text-justify">
-                <RichTextView html={service.detail} />
+                <RichTextView html={service.detail ?? ''} />
               </div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
     </section>
-  )
+  );
 }

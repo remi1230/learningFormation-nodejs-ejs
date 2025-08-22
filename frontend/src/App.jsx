@@ -14,7 +14,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* 
           1) Layout principal monté sur "/"

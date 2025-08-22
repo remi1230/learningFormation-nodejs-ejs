@@ -1,4 +1,5 @@
 // src/components/Header.jsx
+import { Link } from 'react-router-dom'
 import ThemeController from "./ui-kit/ThemeController.jsx";
 import SchedulesSection from "./SchedulesSection.jsx";
 import { useAuth } from '../context/AuthContext';
@@ -77,11 +78,11 @@ export default function Header() {
         <div className="navbar px-4 relative"> {/* relative pour l'absolu du centre */}
           {/* START */}
           <div className="navbar-start flex items-center gap-2">
-            <a className="text-md lg:text-lg xl:text-xl font-bold btn btn-ghost btn-sm p-1 mr-1 whitespace-nowrap" href="/">
+            <Link className="text-md lg:text-lg xl:text-xl font-bold btn btn-ghost btn-sm p-1 mr-1 whitespace-nowrap" to={import.meta.env.BASE_URL}>
               <div className="flex flex-col xl:flex-row gap-1">
                 <div>Clinique dentaire</div><div className="hidden xl:block">-</div><div>{title}</div> 
               </div>
-            </a>
+            </Link>
             
             {loading ? (
               <span className="text-sm text-gray-400">Chargement...</span>
@@ -100,20 +101,20 @@ export default function Header() {
           {/* CENTER — centré optiquement, quelle que soit la largeur start/end */}
           <div className="navbar-center absolute left-1/2 -translate-x-1/2
                           lg:static lg:translate-x-0">
-            <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/">Accueil</a>
+            <Link className="text-sm lg:text-xl btn btn-ghost btn-lg" to="/">Accueil</Link>
 
             {user ? (
               user.role === "Professional" || user.role === "Administrator" ? null : (
-                <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/take-appointment">RDV</a>
+                <Link className="text-sm lg:text-xl btn btn-ghost btn-lg" to="/take-appointment">RDV</Link>
               )
             ) : (
-              <a className="text-sm lg:text-xl btn btn-ghost btn-lg" href="/connexion">Espace client</a>
+              <Link className="text-sm lg:text-xl btn btn-ghost btn-lg" to="/connexion">Espace client</Link>
             )}
 
             {user && (user.role === "Professional" || user.role === "Administrator") ? (
-              <a className="text-base lg:text-xl btn btn-ghost btn-lg" href="/backoffice">Administration</a>
+              <Link className="text-base lg:text-xl btn btn-ghost btn-lg" to="/backoffice">Administration</Link>
             ) : !user ? (
-              <a className="text-base lg:text-xl btn btn-ghost btn-lg" href="/connexion-pro">Accès Professionnel</a>
+              <Link className="text-base lg:text-xl btn btn-ghost btn-lg" to="/connexion-pro">Accès Professionnel</Link>
             ) : null}
           </div>
 

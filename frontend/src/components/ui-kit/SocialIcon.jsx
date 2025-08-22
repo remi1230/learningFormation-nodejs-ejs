@@ -1,10 +1,10 @@
 'use client';
+import { Link } from 'react-router-dom'
 
-
-export default function SocialIcon({ href, children }) {
+export default function SocialIcon({ to, children }) {
   return (
-    <a
-      href={href}
+    <Link
+      to={to}
       target="_blank"
       rel="noopener noreferrer"
       className="w-10 h-10 flex items-center justify-center
@@ -12,6 +12,6 @@ export default function SocialIcon({ href, children }) {
       hover:bg-base-300 transition-colors duration-300"
     >
       {children}
-    </a>
+    </Link>
   );
 }

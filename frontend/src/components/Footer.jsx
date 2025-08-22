@@ -19,13 +19,13 @@ export default function Footer() {
                 <div>18000 Bourges</div>
             </nav>
             <nav className="flex flex-row items-center gap-2">
-                <SocialIcon href="https://x.com/i/flow/login">
+                <SocialIcon to="https://x.com/i/flow/login">
                     <FaXTwitter size={18} />
                 </SocialIcon>
-                <SocialIcon href="https://www.facebook.com/">
+                <SocialIcon to="https://www.facebook.com/">
                     <FaFacebook size={18} />
                 </SocialIcon>
-                <SocialIcon href="https://www.linkedin.com/">
+                <SocialIcon to="https://www.linkedin.com/">
                     <FaLinkedin size={18} />
                 </SocialIcon>
             </nav>
