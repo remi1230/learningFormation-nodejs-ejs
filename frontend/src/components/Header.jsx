@@ -29,9 +29,8 @@ export default function Header() {
         throw new Error(`Logout failed (${res.status})`);
       }
       setUser(null);
-      // selon ton routing, choisis l’une des options :
-      window.location.assign("/");   // recharge et revient à l’accueil
-      navigate("/");                 // si tu utilises react-router
+      
+      navigate("/");
     } catch (e) {
       console.error(e);
     } finally {
