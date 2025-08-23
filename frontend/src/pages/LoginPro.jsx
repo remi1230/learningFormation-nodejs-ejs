@@ -53,7 +53,7 @@ export default function Connexion() {
       setError('Une erreur est survenue, veuillez réessayer');
     }
 
-    const me = await axios.get('/api/auth/me', { withCredentials: true });
+    const me = await axios.get(`${API_BASE}/auth/me`, { withCredentials: true });
     setUser(me.data);
   };
 
