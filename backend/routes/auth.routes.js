@@ -41,6 +41,8 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 // Callback Google → JWT + Cookie
+const isProd = process.env.NODE_ENV === 'production';
+const BASE_PATH = isProd ? '/nodejsmysql' : '/';
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login', session: false }),
   (req, res) => {
@@ -53,7 +55,7 @@ router.get('/google/callback',
       httpOnly: true,
       maxAge: 24 * 3600 * 1000
     });
-    res.redirect('http://localhost:5173/take-appointment'); // ou autre redirection frontend
+    res.redirect(isProd ? 'https://my1prod.com/nodejsmysql/take-appointment' : 'http://localhost:5173/take-appointment'); // ou autre redirection frontend
   }
 );
 
@@ -61,8 +63,10 @@ router.get('/google/callback',
 router.post('/logout', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
-    sameSite: 'lax',     // mets 'none' + secure:true si front et API sont sur domaines différents en prod HTTPS
-    secure: false,       // true en prod HTTPS
+    maxAge: 24 * 3600 * 1000,
+    sameSite: isProd ? 'none' : 'lax', // mettre 'none' + secure:true si front et API sont sur domaines différents en prod HTTPS
+    secure: isProd,       // true en prod HTTPS
+    path: BASE_PATH || '/',
   });
   return res.sendStatus(204);
 });
