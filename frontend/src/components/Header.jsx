@@ -1,4 +1,5 @@
 // src/components/Header.jsx
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
 import ThemeController from "./ui-kit/ThemeController.jsx";
 import SchedulesSection from "./SchedulesSection.jsx";
@@ -12,6 +13,7 @@ import { LogOut } from "lucide-react";
 const API_BASE = `${import.meta.env.BASE_URL}api`;
 
 export default function Header() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { user, setUser, loading } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
