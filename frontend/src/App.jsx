@@ -1,6 +1,7 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState }    from 'react';
+import axios           from "axios";
 import MainLayout      from './layout/MainLayout';
 import Home            from './pages/Home';
 import TakeAppointment from './pages/TakeAppointment';
@@ -12,6 +13,10 @@ import './styles/tiptap.css'
 
 const isProd = import.meta.env.MODE === "production";
 const baseName = isProd ? "/nodejsmysql" : "/";
+
+axios.defaults.baseURL =
+  import.meta.env.MODE === isProd ? "/nodejsmysql/api" : "/api";
+axios.defaults.withCredentials = true;
 
 export default function App() {
   const [user, setUser] = useState(null);
