@@ -32,7 +32,7 @@ export default function Connexion() {
       }
 
       // 2️⃣ Ensuite on récupère l'utilisateur
-      const me = await axios.get('http://localhost:3000/api/auth/me', {
+      const me = await axios.get(`${API_BASE}/auth/me`, {
         withCredentials: true
       });
 
