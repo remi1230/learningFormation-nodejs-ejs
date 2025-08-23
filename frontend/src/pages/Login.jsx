@@ -58,7 +58,7 @@ export default function Connexion() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    window.location.href = `${API_BASE}/auth/google`;
   };
 
   return (
