@@ -10,11 +10,14 @@ import BackOffice      from './pages/BackOffice';
 import PrivateRoute    from './components/PrivateRoute';
 import './styles/tiptap.css'
 
+const isProd = import.meta.env.MODE === "production";
+const baseName = isProd ? "/nodejsmysql" : "/";
+
 export default function App() {
   const [user, setUser] = useState(null);
   
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter basename={baseName}>
       <Routes>
         {/* 
           1) Layout principal monté sur "/"
