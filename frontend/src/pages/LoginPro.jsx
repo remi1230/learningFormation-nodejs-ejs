@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { api } from '../api/axios';
 
 const API_BASE = `${import.meta.env.BASE_URL}api`;
 
@@ -32,9 +32,7 @@ export default function Connexion() {
       }
 
       // 2️⃣ Ensuite on récupère l'utilisateur
-      const me = await axios.get(`${API_BASE}/auth/me`, {
-        withCredentials: true
-      });
+      const me = await api.get('/auth/me');
 
       const user = me.data;
 
@@ -53,7 +51,7 @@ export default function Connexion() {
       setError('Une erreur est survenue, veuillez réessayer');
     }
 
-    const me = await axios.get(`${API_BASE}/auth/me`, { withCredentials: true });
+    const me = await api.get('/auth/me');
     setUser(me.data);
   };
 
