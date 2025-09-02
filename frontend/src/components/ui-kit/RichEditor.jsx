@@ -17,6 +17,8 @@ import { TableRow } from '@tiptap/extension-table-row'
 import { TableCell } from '@tiptap/extension-table-cell'
 import { TableHeader } from '@tiptap/extension-table-header'
 
+const API_BASE = `${import.meta.env.BASE_URL}api`;
+
 // --- Mock mentions ---
 const mockUsers = [
   { id: '1', label: 'Alice' },
@@ -79,7 +81,7 @@ const mentionSuggestion = {
 async function uploadImageToServer(file) {
   const form = new FormData()
   form.append('image', file)
-  const res = await fetch('/api/upload-image', {
+  const res = await fetch(`${API_BASE}upload-image`, {
     method: 'POST',
     body: form,
     credentials: 'include', // si besoin de cookie/session
