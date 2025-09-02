@@ -71,6 +71,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
+
 // ===============================
 // 3) Statics
 // ===============================
@@ -90,6 +93,7 @@ app.use((req, res, next) => {
   res.locals.baseUrl = isProd ? '/nodejsmysql' : '';
   next();
 });
+
 
 // ===============================
 // 4) API

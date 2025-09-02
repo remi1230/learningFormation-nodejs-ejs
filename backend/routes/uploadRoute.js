@@ -24,9 +24,11 @@ module.exports = function (UPLOAD_DIR) {
     }
   });
 
+  const imgFolderPath = process.env.NODE_ENV === 'development' ? 'uploads' : 'nodejsmysql/uploads';
+
   router.post('/', upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Aucun fichier' });
-    res.json({ url: `/uploads/${req.file.filename}`, name: req.file.originalname });
+    res.json({ url: `/${imgFolderPath}/${req.file.filename}`, name: req.file.originalname });
   });
 
   return router;
