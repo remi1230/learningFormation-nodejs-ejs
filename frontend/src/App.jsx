@@ -9,6 +9,7 @@ import Login           from './pages/Login';
 import LoginPro        from './pages/LoginPro';
 import BackOffice      from './pages/BackOffice';
 import PrivateRoute    from './components/PrivateRoute';
+import Env             from './pages/Env';
 import './styles/tiptap.css'
 
 const isProd = import.meta.env.MODE === "production";
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="connexion" element={<Login onLoginSuccess={(user) => setUser(user)} />} />
           <Route path="connexion-pro" element={<LoginPro onLoginSuccess={(user) => setUser(user)} />} />
           <Route path="take-appointment" element={<TakeAppointment />} />
+          <Route path="env" element={<Env />} />
 
           {/* catch-all : renvoie à la home si URL inconnue */}
           <Route path="*" element={<Navigate to="/" replace />} />
