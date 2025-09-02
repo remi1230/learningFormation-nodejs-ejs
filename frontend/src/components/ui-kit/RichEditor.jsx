@@ -77,18 +77,33 @@ const mentionSuggestion = {
   },
 }
 
-// --- Helper upload vers ton backend (remplace / adapte si besoin) ---
-async function uploadImageToServer(file) {
-  const form = new FormData()
-  form.append('image', file)
-  const res = await fetch(`${API_BASE}upload-image`, {
+// Base calculée depuis Vite + origin courant
+const ORIGIN = import.meta.env.VITE_API_ORIGIN || window.location.origin; // optionnel : force un origin
+const BASE   = (import.meta.env.BASE_URL || '/');                         // '/', ou '/nodejsmysql/' en prod
+
+// Join propre : origin + base + chemin (ex: '/api/upload-image')
+function apiUrl(path) {
+  const clean = String(path).replace(/^\/+/, ''); // 'api/upload-image'
+  // URL(base) gère les doubles slashs et garantit un trailing slash
+  return new URL(clean, new URL(BASE, ORIGIN)).toString();
+}
+
+// --- Helper upload vers backend ---
+export async function uploadImageToServer(file) {
+  const form = new FormData();
+  form.append('image', file);
+
+  const res = await fetch(apiUrl('/api/upload-image'), {
     method: 'POST',
     body: form,
-    credentials: 'include', // si besoin de cookie/session
-  })
-  if (!res.ok) throw new Error('Upload échoué')
-  const data = await res.json() // { url: '/uploads/abc.png', name: '...' }
-  return data.url
+    credentials: 'include',
+  });
+
+  if (!res.ok) throw new Error('Upload échoué');
+
+  // backend renvoie ex: { url: '/uploads/abc.png', absoluteUrl: 'https://...' }
+  const data = await res.json();
+  return data.url; // ou data.absoluteUrl si tu préfères une URL absolue
 }
 
 export default function RichEditor({ value = '', onChange }) {
