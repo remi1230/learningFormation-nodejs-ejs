@@ -1,6 +1,7 @@
 // DatePicker.jsx
 import { useEffect, useRef } from "react";
 import { toYMD, formatFR } from "../../utils/dateFormat";
+import 'cally';
 
 export default function DatePicker({ formData, setFormData }) {
   const calRef = useRef(null);
