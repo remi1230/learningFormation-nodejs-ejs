@@ -34,7 +34,7 @@ export default function NewsList() {
 
   const saveMutation = useMutation({
     mutationFn: async (theNew) => {
-      const url = theNew.id ? `${API_BASE}/news-crud/${theNew.id}` : '${API_BASE}/news-crud'
+      const url = theNew.id ? `${API_BASE}/news-crud/${theNew.id}` : `${API_BASE}/news-crud`
       const method = theNew.id ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,
