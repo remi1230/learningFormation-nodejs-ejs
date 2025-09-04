@@ -1,11 +1,21 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import MapCabinet from "./ui-kit/MapCabinet";
+
+// --- Helpers pour gérer base/origin ---
+const ORIGIN = import.meta.env.VITE_API_ORIGIN || window.location.origin;
+const BASE   = import.meta.env.BASE_URL || "/";
+
+function assetUrl(path) {
+  const clean = String(path).replace(/^\/+/, ""); // enlève les leading '/'
+  return new URL(clean, new URL(BASE, ORIGIN)).toString();
+}
 
 export default function MapCabinetSection() {
   return (
     <section>
       <h1 className="text-4xl font-bold">Nous trouver</h1>
       <h1 className="text-xl font-medium">Nous sommes situés au 12 rue des Aubépines</h1>
+
       <MapCabinet
         lat={47.0810}
         lng={2.3988}
@@ -16,18 +26,23 @@ export default function MapCabinetSection() {
               <p>12, rue des Aubépines</p>
               <p>18000 Bourges</p>
             </div>
-            
-            <img className="w-40 h-40" src="/img/clinic/clinic.webp" alt="Cabinet dentaire du docteur Dupont" />
+
+            <img
+              className="w-40 h-40"
+              src={assetUrl("/img/clinic/clinic.webp")}
+              alt="Cabinet dentaire du docteur Dupont"
+            />
           </div>
         }
       />
+
       <Link
         className="link text-lg mt-12"
         to="https://maps.google.com/?q=Cabinet+dentaire+XYZ"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Ouvrir dans Google Maps
+        Ouvrir dans Google Maps
       </Link>
     </section>
   );

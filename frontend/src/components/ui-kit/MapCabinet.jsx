@@ -4,13 +4,13 @@ import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const CONTAINER_STYLE = { width: "100%", height: "480px" };
-const MAP_ID = "TON_MAP_ID_ICI"; // ton “ID du style”
+const MAP_ID = import.meta.env.VITE_GOOGLE_MAPS_ID_STYLE;
 
 export default function MapCabinet({
   lat = 47.0810,
   lng = 2.3988,
   zoom = 15,
-  title = "Cabinet dentaire du Dr Dupont",
+  title = "Cabinet dentaire du Dr Dubois",
 }) {
   const center = useMemo(() => ({ lat, lng }), [lat, lng]);
   const mapRef = useRef(null);
